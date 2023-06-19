@@ -11,6 +11,7 @@ import {
   TwitterIcon,
   BriefcaseIcon,
 } from '@/components/icons';
+import { SocialLink } from '@/components/links';
 import logoGojek from '@/public/images/logos/gojek.jpeg';
 import logoInfosys from '@/public/images/logos/infosys.jpeg';
 import logoPagalguy from '@/public/images/logos/pg.jpeg';
@@ -19,14 +20,6 @@ import image2 from '@/public/images/photos/image-2.jpg';
 import image3 from '@/public/images/photos/image-3.jpg';
 import image4 from '@/public/images/photos/image-4.jpg';
 import image5 from '@/public/images/photos/image-5.jpg';
-
-function SocialLink({ href, icon: Icon, ...props }) {
-  return (
-    <Link href={href} className="group -m-1 p-1" {...props}>
-      <Icon className="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
-    </Link>
-  );
-}
 
 function Resume() {
   let resume = [
