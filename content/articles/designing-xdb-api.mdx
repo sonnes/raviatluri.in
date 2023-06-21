@@ -1,0 +1,95 @@
+---
+  author: 'You'
+  date: '2023-05-08'
+  description: 'Design of XDB Go API'
+  title: 'Designing XDB API'
+  tags: ['xdb']
+---
+
+In this article, we will build on developer experience described in [Building XDB](/articles/building-xdb) and define the XDB Go API.
+
+XDB has three primary abstractions: Key, Attribute and Value.
+
+## Key
+
+Key is a unique reference to an node. Key is made up of two parts: Kind and ID. Kind is a string that identifies the type of node. ID is a string that uniquely identifies an node within a kind.
+
+A `Key` is an immutable struct instantiated with `kind` and `id` or by parsing an encoded key.
+
+```go
+key := xdb.NewKey("User", "123")
+// or
+key := xdb.MustParseKey("User:123")
+```
+
+## Attribute
+
+Attribute is a named property of an node. Attribute is made up of three parts: Key, Name and Value. Key is a unique identifier for an node. Name is a string that identifies the attribute. Value is byte encoded value of the attribute.
+
+`Attribute` is shortened to `Attr` in the type definitions, function names and method names. This reduces the line length and makes the code more readable.
+
+```go
+key := xdb.NewKey("User", "123")
+
+name := xdb.NewAttr(key, "name", xdb.String("Ravi")
+
+expireAt := xdb.ExpireAt(time.Now().Add(24 * time.Hour))
+muteAlerts := xdb.NewAttr(key, "mute_alerts", xdb.Bool(true), expireAt)
+```
+
+## Value
+
+A value is a byte encoded value of an attribute. API provides functions to encode and decode values for common types.
+
+```go
+nameAttr := xdb.NewAttr(key, "name", String("Ravi"))
+
+// Value() returns the byte encoded value
+nameAttr.Value() // []byte("Ravi")
+
+// String() decodes the value as string
+nameAttr.String() // "Ravi"
+
+```
+
+Similarly, there are functions to encode and decode values for other types.
+
+```go
+attr := xdb.NewAttr(key, "age", xdb.Int(20))
+attr.Int() // 20
+
+attr := xdb.NewAttr(key, "height", xdb.Float(5.7))
+attr.Float() // 5.7
+
+attr := xdb.NewAttr(key, "active", xdb.Bool(true))
+attr.Bool() // true
+
+attr := xdb.NewAttr(key, "last_seen", xdb.Time(time.Now()))
+attr.Time() // time.Time("2023-05-05T00:00:00Z")
+```
+
+## Store APIs
+
+The APIs are broken down into two interfaces: `Store` and `Query`.
+
+All storage implementations must implement the `Store` interface. `Store` interface provides methods to get, put and delete attributes individually or in bulk.
+
+```go
+type Store interface {
+  Get(ctx context.Context, attrs ...*Attr) ([]*Attr, error)
+  Put(ctx context.Context, attrs ...*Attr) error
+  Delete(ctx context.Context, attrs ...*Attr) error
+}
+```
+
+For `Get` and `Delete` methods, a partial `Attr` can be passed. The `Attr` must have the `Key` and `Name` fields set. The `Value` field is ignored.
+
+```go
+key := xdb.NewKey("User", "123")
+
+nameAttr := xdb.NewAttr(key, "name")
+
+attrs, err := store.Get(ctx, nameAttr)
+```
+
+We will defer the definition of `Query` interface to later.
