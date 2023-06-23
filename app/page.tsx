@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import clsx from 'clsx';
+import { allArticles } from 'contentlayer/generated';
 
 import { Container } from '@/components/container';
 import {
@@ -9,9 +10,9 @@ import {
   InstagramIcon,
   LinkedInIcon,
   TwitterIcon,
-  BriefcaseIcon,
 } from '@/components/icons';
 import { SocialLink } from '@/components/links';
+import Resume, { Experience } from '@/components/resume';
 import logoGojek from '@/public/images/logos/gojek.jpeg';
 import logoInfosys from '@/public/images/logos/infosys.jpeg';
 import logoPagalguy from '@/public/images/logos/pg.jpeg';
@@ -20,78 +21,33 @@ import image2 from '@/public/images/photos/image-2.jpg';
 import image3 from '@/public/images/photos/image-3.jpg';
 import image4 from '@/public/images/photos/image-4.jpg';
 import image5 from '@/public/images/photos/image-5.jpg';
+import { Card } from '@/components/card';
+import type { Article } from 'contentlayer/generated';
+import { formatDate } from '@/lib/formatDate';
 
-function Resume() {
-  let resume = [
-    {
-      company: 'Gojek',
-      title: 'Senior Engineering Manager',
-      logo: logoGojek,
-      start: '2019',
-      end: {
-        label: 'Present',
-        dateTime: new Date().getFullYear(),
-      },
-    },
-    {
-      company: 'PaGaLGuY',
-      title: 'Director of Engineering',
-      logo: logoPagalguy,
-      start: '2011',
-      end: '2019',
-    },
-    {
-      company: 'Infosys',
-      title: 'Senior Software Engineer',
-      logo: logoInfosys,
-      start: '2008',
-      end: '2011',
-    },
-  ];
-
-  return (
-    <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-      <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-        <BriefcaseIcon className="h-6 w-6 flex-none" />
-        <span className="ml-3">Work</span>
-      </h2>
-      <ol className="mt-6 space-y-4">
-        {resume.map((role, roleIndex) => (
-          <li key={roleIndex} className="flex gap-4">
-            <div className="relative mt-1 flex h-10 w-10 flex-none items-center justify-center rounded-full shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
-              <Image src={role.logo} alt="" className="h-9 w-9" unoptimized />
-            </div>
-            <dl className="flex flex-auto flex-wrap gap-x-2">
-              <dt className="sr-only">Company</dt>
-              <dd className="w-full flex-none text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                {role.company}
-              </dd>
-              <dt className="sr-only">Role</dt>
-              <dd className="text-xs text-zinc-500 dark:text-zinc-400">
-                {role.title}
-              </dd>
-              <dt className="sr-only">Date</dt>
-              <dd
-                className="ml-auto text-xs text-zinc-400 dark:text-zinc-500"
-                aria-label={`${role.start.label ?? role.start} until ${
-                  role.end.label ?? role.end
-                }`}
-              >
-                <time dateTime={role.start.dateTime ?? role.start}>
-                  {role.start.label ?? role.start}
-                </time>{' '}
-                <span aria-hidden="true">—</span>{' '}
-                <time dateTime={role.end.dateTime ?? role.end}>
-                  {role.end.label ?? role.end}
-                </time>
-              </dd>
-            </dl>
-          </li>
-        ))}
-      </ol>
-    </div>
-  );
-}
+const resume: Experience[] = [
+  {
+    company: 'Gojek',
+    title: 'Senior Engineering Manager',
+    logo: logoGojek,
+    start: '2019',
+    current: true,
+  },
+  {
+    company: 'PaGaLGuY',
+    title: 'Director of Engineering',
+    logo: logoPagalguy,
+    start: '2011',
+    end: '2019',
+  },
+  {
+    company: 'Infosys',
+    title: 'Senior Software Engineer',
+    logo: logoInfosys,
+    start: '2008',
+    end: '2011',
+  },
+];
 
 function Photos() {
   let rotations = [
@@ -126,8 +82,23 @@ function Photos() {
   );
 }
 
+function Article({ article }: { article: Article }  ) {
+  return (
+    <Card as="article">
+      <Card.Title href={`/articles/${article.slug}`}>
+        {article.title}
+      </Card.Title>
+      <Card.Eyebrow as="time" dateTime={article.date} decorate>
+        {formatDate(article.date)}
+      </Card.Eyebrow>
+      <Card.Description>{article.description}</Card.Description>
+      <Card.Cta>Read article</Card.Cta>
+    </Card>
+  );
+}
+
 export default async function Home() {
-  const articles = new Array();
+  const articles = allArticles.sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
 
   return (
     <>
@@ -171,12 +142,12 @@ export default async function Home() {
       <Container className="mt-24 md:mt-28">
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
           <div className="flex flex-col gap-16">
-            {/* {articles.map((article) => (
+            {articles.map((article) => (
               <Article key={article.slug} article={article} />
-            ))} */}
+            ))}
           </div>
           <div className="space-y-10 lg:pl-16 xl:pl-24">
-            <Resume />
+            <Resume resume={resume} />
           </div>
         </div>
       </Container>
