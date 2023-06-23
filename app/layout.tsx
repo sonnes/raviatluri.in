@@ -13,16 +13,16 @@ export const metadata: Metadata = {
     template: '%s | Ravi Atluri',
   },
   description:
-    'Product Engineer at GoFood in Gojek. Working scalable and reliable systems & abstractions for product engineering teams. Living with ALS since 2019.',
+    'Product Engineer at GoFood in Gojek. Working scalable and reliable systems & abstractions for product engineering teams.',
   openGraph: {
     title: 'Ravi Atluri',
     description:
-      'Product Engineer at GoFood in Gojek. Working scalable and reliable systems & abstractions for product engineering teams. Living with ALS since 2019.',
+      'Product Engineer at GoFood in Gojek. Working scalable and reliable systems & abstractions for product engineering teams.',
     url: 'https://raviatluri.in',
     siteName: 'Ravi Atluri',
     images: [
       {
-        url: 'https://raviatluri.in/og.jpg',
+        url: 'https://raviatluri.in/og.png',
         width: 1920,
         height: 1080,
       },

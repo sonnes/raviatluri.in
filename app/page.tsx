@@ -111,8 +111,7 @@ export default async function Home() {
           }
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
             Product Engineer at GoFood, Gojek. Working scalable and reliable
-            systems & abstractions for product engineering teams. Living with
-            ALS since 2019.
+            systems & abstractions for product engineering teams.
           </p>
           <div className="mt-6 flex gap-6">
             <SocialLink

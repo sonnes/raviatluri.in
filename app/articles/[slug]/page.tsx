@@ -29,7 +29,7 @@ export async function generateMetadata({
   const { title, date: publishedTime, description, image, slug } = post;
   const ogImage = image
     ? `https://raviatluri.in${image}`
-    : `https://raviatluri.in/api/og?title=${title}`;
+    : `https://raviatluri.in/og?title=${title}&subtitle=${description}`;
 
   return {
     title,
