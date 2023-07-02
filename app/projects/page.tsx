@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import Image from 'next/image';
 
 import type { Metadata } from 'next';
@@ -37,13 +36,6 @@ export const metadata: Metadata = {
 export default function Projects() {
   return (
     <>
-      <Head>
-        <title>Projects - Ravi Atluri</title>
-        <meta
-          name="description"
-          content="Things I've built, including open-source projects, side projects, and more."
-        />
-      </Head>
       <SimpleLayout
         title="Projects"
         intro="Things I've built, including open-source projects, side projects, and more."

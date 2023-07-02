@@ -16,14 +16,10 @@ import Resume, { Experience } from '@/components/resume';
 import logoGojek from '@/public/images/logos/gojek.jpeg';
 import logoInfosys from '@/public/images/logos/infosys.jpeg';
 import logoPagalguy from '@/public/images/logos/pg.jpeg';
-import image1 from '@/public/images/photos/image-1.jpg';
-import image2 from '@/public/images/photos/image-2.jpg';
-import image3 from '@/public/images/photos/image-3.jpg';
-import image4 from '@/public/images/photos/image-4.jpg';
-import image5 from '@/public/images/photos/image-5.jpg';
 import { Card } from '@/components/card';
 import type { Article } from 'contentlayer/generated';
 import { formatDate } from '@/lib/formatDate';
+import photos from '@/lib/photos';
 
 const resume: Experience[] = [
   {
@@ -61,16 +57,16 @@ function Photos() {
   return (
     <div className="mt-16 sm:mt-20">
       <div className="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8">
-        {[image1, image2, image3, image4, image5].map((image, imageIndex) => (
+        {photos.map((image, imageIndex) => (
           <div
-            key={image.src}
+            key={imageIndex}
             className={clsx(
               'relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800 sm:w-72 sm:rounded-2xl',
               rotations[imageIndex % rotations.length]
             )}
           >
             <Image
-              src={image}
+              src={image.src}
               alt=""
               sizes="(min-width: 640px) 18rem, 11rem"
               className="absolute inset-0 h-full w-full object-cover"
