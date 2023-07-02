@@ -4,7 +4,6 @@ import { allArticles } from 'contentlayer/generated';
 import type { Metadata } from 'next';
 
 import { Container } from '@/components/container';
-import { ArrowLeftIcon } from '@/components/icons';
 import { MDX } from '@/components/mdx';
 import { formatDate } from '@/lib/formatDate';
 

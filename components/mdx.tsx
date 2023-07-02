@@ -1,20 +1,24 @@
 import * as React from 'react';
 
 import Image from 'next/image';
-import Link from 'next/link';
 
 import { useMDXComponent } from 'next-contentlayer/hooks';
 
 function RoundedImage({ alt, ...props }: React.ComponentProps<typeof Image>) {
   return (
-    <Image
-      alt={alt}
-      width={800}
-      height={600}
-      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-      className="rounded-lg"
-      {...props}
-    />
+    <div className="grid grid-cols-1 justify-items-center">
+      <div>
+        <Image
+          alt={alt}
+          width={800}
+          height={600}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="rounded-lg"
+          {...props}
+        />
+      </div>
+      <div className="text-xs italic text-gray-800">{alt}</div>
+    </div>
   );
 }
 
