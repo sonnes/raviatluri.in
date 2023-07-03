@@ -10,7 +10,7 @@ function NavItem({
   href: string;
   children: React.ReactNode;
 }): JSX.Element {
-  let isActive = usePathname() === href;
+  let isActive = usePathname().startsWith(href);
 
   return (
     <li>

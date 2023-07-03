@@ -1,0 +1,30 @@
+---
+  author: 'You'
+  date: '2023-07-03'
+  title: 'Using xrun'
+---
+
+Example of using xrun(https://github.com/gojekfarm/xrun) to manage multiple components in a Go service.
+
+Components can implement the `xrun.Component` interface or can be wrapped with `xrun.ComponentFunc` to be used with `xrun`.
+
+```go
+# kafka consumer
+consumer := newKafkaConsumer()
+
+# gRPC server
+server := newGRPCServer()
+
+# metrics server
+metrics := newMetricsServer()
+
+err := xrun.All(
+    xrun.NoTimeout,
+    consumer,
+    server,
+    metrics,
+)
+
+```
+
+Blog: https://ajatprabha.in/2023/05/24/intro-xrun-package-managing-component-lifecycle-go

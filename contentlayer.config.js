@@ -10,15 +10,6 @@ const computedFields = {
     type: 'string',
     resolve: (doc) => doc._raw.flattenedPath,
   },
-  tweetIds: {
-    type: 'array',
-    resolve: (doc) => {
-      const tweetMatches = doc.body.raw.match(
-        /<StaticTweet\sid="[0-9]+"\s\/>/g
-      );
-      return tweetMatches?.map((tweet) => tweet.match(/[0-9]+/g)[0]) || [];
-    },
-  },
   structuredData: {
     type: 'object',
     resolve: (doc) => ({
@@ -37,6 +28,14 @@ const computedFields = {
         name: 'Lee Robinson',
       },
     }),
+  },
+  preview: {
+    type: 'string',
+    resolve: (doc) => {
+      const preview = doc.body.raw.substring(0, 100).replace(/\n/g, ' ');
+
+      return preview;
+    },
   },
 };
 
@@ -71,9 +70,32 @@ export const Article = defineDocumentType(() => ({
   computedFields,
 }));
 
+export const Snippet = defineDocumentType(() => ({
+  name: 'Snippet',
+  filePathPattern: `snippets/**/*.mdx`,
+  contentType: 'mdx',
+  fields: {
+    title: {
+      type: 'string',
+      required: true,
+    },
+    date: {
+      type: 'string',
+      required: true,
+    },
+    image: {
+      type: 'string',
+    },
+    author: {
+      type: 'string',
+    },
+  },
+  computedFields,
+}));
+
 export default makeSource({
   contentDirPath: 'content',
-  documentTypes: [Article],
+  documentTypes: [Article, Snippet],
   mdx: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [
