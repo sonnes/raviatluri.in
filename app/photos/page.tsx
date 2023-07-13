@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: 'Landscapes, portraits, and more taken over the years.',
 };
 
-export default function Projects() {
+export default function Photos() {
   return (
     <>
       <SimpleLayout

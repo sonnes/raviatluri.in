@@ -26,6 +26,15 @@ const projects: Project[] = [
       label: 'github.com/sonnes/xdb',
     },
   },
+  {
+    name: 'Life in Weeks',
+    description:
+      'An aggregation of my work, major life events etc. visualized in weeks.',
+    link: {
+      href: '/life',
+      label: 'Life in Weeks',
+    },
+  },
 ];
 export const metadata: Metadata = {
   title: 'Projects',

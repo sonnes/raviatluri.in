@@ -1,4 +1,8 @@
-import { defineDocumentType, makeSource } from 'contentlayer/source-files';
+import {
+  defineDocumentType,
+  defineNestedType,
+  makeSource,
+} from 'contentlayer/source-files';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeSlug from 'rehype-slug';
@@ -93,9 +97,46 @@ export const Snippet = defineDocumentType(() => ({
   computedFields,
 }));
 
+export const Event = defineNestedType(() => ({
+  name: 'Event',
+  fields: {
+    title: {
+      type: 'string',
+      required: true,
+    },
+    date: {
+      type: 'string',
+      required: true,
+    },
+    image: {
+      type: 'string',
+    },
+    link: {
+      type: 'string',
+    },
+    location: {
+      type: 'string',
+    },
+  },
+}));
+
+export const Timeline = defineDocumentType(() => ({
+  name: 'Timeline',
+  filePathPattern: `events.yaml`,
+  contentType: 'data',
+  isSingleton: true,
+  fields: {
+    events: {
+      type: 'list',
+      of: Event,
+      required: true,
+    },
+  },
+}));
+
 export default makeSource({
   contentDirPath: 'content',
-  documentTypes: [Article, Snippet],
+  documentTypes: [Article, Snippet, Timeline],
   mdx: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [
