@@ -10,9 +10,7 @@ import moment from 'moment';
 import type { Metadata } from 'next';
 
 import { SimpleLayout } from '@/components/simple_layout';
-
-import { Tooltip } from '@/components/Tooltip';
-import { Header } from '@/components/Header';
+import { Header, Tooltip } from '@/components/life_sections';
 
 export const metadata: Metadata = {
   title: 'Life',
