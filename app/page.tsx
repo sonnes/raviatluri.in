@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import clsx from 'clsx';
-import { allArticles } from 'contentlayer/generated';
+import { allArticles, allSnippets } from 'contentlayer/generated';
 
 import { Container } from '@/components/container';
 import {
@@ -93,8 +93,24 @@ function Article({ article }: { article: Article }  ) {
   );
 }
 
+function Snippet({ snippet }: { snippet: Snippet }  ) {
+  return (
+    <Card as="article">
+      <Card.Title href={snippet.slug}>
+        {snippet.title}
+      </Card.Title>
+      <Card.Eyebrow as="time" dateTime={snippet.date} decorate>
+        {formatDate(snippet.date)}
+      </Card.Eyebrow>
+      <Card.Description>{snippet.description}</Card.Description>
+      <Card.Cta>Read</Card.Cta>
+    </Card>
+  );
+}
+
 export default async function Home() {
   const articles = allArticles.sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
+  const snippets = allSnippets.sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
 
   return (
     <>
@@ -139,6 +155,9 @@ export default async function Home() {
           <div className="flex flex-col gap-16">
             {articles.map((article) => (
               <Article key={article.slug} article={article} />
+            ))}
+            {snippets.map((snippet) => (
+              <Snippet key={snippet.slug} snippet={snippet} />
             ))}
           </div>
           <div className="space-y-10 lg:pl-16 xl:pl-24">
