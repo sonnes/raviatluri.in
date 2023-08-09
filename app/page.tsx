@@ -2,7 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import clsx from 'clsx';
-import { allArticles } from 'contentlayer/generated';
+import { allArticles, allSnippets } from 'contentlayer/generated';
+import type { Snippet } from 'contentlayer/generated';
 
 import { Container } from '@/components/container';
 import {
@@ -78,7 +79,7 @@ function Photos() {
   );
 }
 
-function Article({ article }: { article: Article }  ) {
+function Article({ article }: { article: Article }) {
   return (
     <Card as="article">
       <Card.Title href={article.slug}>
@@ -93,43 +94,61 @@ function Article({ article }: { article: Article }  ) {
   );
 }
 
+function Snippet({ snippet }: { snippet: Snippet }) {
+  return (
+    <Card as="article">
+      <Card.Title href={snippet.slug}>
+        {snippet.title}
+      </Card.Title>
+      <Card.Eyebrow as="time" dateTime={snippet.date} decorate>
+        {formatDate(snippet.date)}
+      </Card.Eyebrow>
+      <Card.Cta>View</Card.Cta>
+    </Card>
+  );
+}
+
 export default async function Home() {
   const articles = allArticles.sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
+  const snippets = allSnippets.sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
 
   return (
     <>
       <Container className="mt-9">
-        <div className="max-w-2xl">
-          {
+        <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
+          <div>
             <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
               Ravi Atluri.
             </h1>
-          }
-          <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            Product Engineer at GoFood, Gojek. Working scalable and reliable
-            systems & abstractions for product engineering teams.
-          </p>
-          <div className="mt-6 flex gap-6">
-            <SocialLink
-              href="https://twitter.com/sonnes"
-              aria-label="Follow on Twitter"
-              icon={TwitterIcon}
-            />
-            <SocialLink
-              href="https://instagram.com/sonnes"
-              aria-label="Follow on Instagram"
-              icon={InstagramIcon}
-            />
-            <SocialLink
-              href="https://github.com/sonnes"
-              aria-label="Follow on GitHub"
-              icon={GitHubIcon}
-            />
-            <SocialLink
-              href="https://www.linkedin.com/in/atluriravi"
-              aria-label="Follow on LinkedIn"
-              icon={LinkedInIcon}
-            />
+            <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
+              Product Engineer at GoFood, Gojek. Working scalable and reliable
+              systems & abstractions for product engineering teams.
+            </p>
+            <div className="mt-6 flex gap-6">
+              <SocialLink
+                href="https://twitter.com/sonnes"
+                aria-label="Follow on Twitter"
+                icon={TwitterIcon}
+              />
+              <SocialLink
+                href="https://instagram.com/sonnes"
+                aria-label="Follow on Instagram"
+                icon={InstagramIcon}
+              />
+              <SocialLink
+                href="https://github.com/sonnes"
+                aria-label="Follow on GitHub"
+                icon={GitHubIcon}
+              />
+              <SocialLink
+                href="https://www.linkedin.com/in/atluriravi"
+                aria-label="Follow on LinkedIn"
+                icon={LinkedInIcon}
+              />
+            </div>
+          </div>
+          <div className="space-y-10 lg:pl-16 xl:pl-24">
+            <Resume resume={resume} />
           </div>
         </div>
       </Container>
@@ -137,13 +156,23 @@ export default async function Home() {
       <Container className="mt-24 md:mt-28">
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
           <div className="flex flex-col gap-16">
+            <h2 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-3xl">
+              Articles
+            </h2>
             {articles.map((article) => (
               <Article key={article.slug} article={article} />
             ))}
           </div>
-          <div className="space-y-10 lg:pl-16 xl:pl-24">
-            <Resume resume={resume} />
+
+          <div className="flex flex-col gap-16">
+            <h2 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-3xl">
+              Snippets
+            </h2>
+            {snippets.map((snippet) => (
+              <Snippet key={snippet.slug} snippet={snippet} />
+            ))}
           </div>
+
         </div>
       </Container>
     </>
