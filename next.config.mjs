@@ -7,6 +7,15 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
   },
+  async rewrites() {
+    return [
+      // Existing rewrites...
+      {
+        source: '/sitemap.xml',
+        destination: '/sitemap.xml',
+      },
+    ];
+  },
 };
 
 export default withContentlayer(nextConfig);
