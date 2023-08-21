@@ -23,7 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   for (const article of allArticles) {
     urls.push({
-      url: `https://raviatluri.in$/{article.slug}`,
+      url: `https://raviatluri.in/${article.slug}`,
       lastModified: new Date(article.date),
     });
   }
