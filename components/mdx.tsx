@@ -1,7 +1,9 @@
 import * as React from 'react';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
+import type { MDXComponents } from 'mdx/types';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 
 function RoundedImage({ alt, ...props }: React.ComponentProps<typeof Image>) {
@@ -36,9 +38,35 @@ function Callout({
     </div>
   );
 }
-const components = {
+
+function ALink({
+  href,
+  children,
+}: {
+  href?: string;
+  children?: React.ReactNode;
+}) {
+  return <Link href={href || ''}>{children}</Link>;
+}
+
+function H1({ children }: { children?: React.ReactNode }) {
+  return <h1 className="text-2xl font-bold">{children}</h1>;
+}
+
+function H2({ children }: { children?: React.ReactNode }) {
+  return <h2 className="text-lg font-bold">{children}</h2>;
+}
+
+function H3({ children }: { children?: React.ReactNode }) {
+  return <h3 className="font-bold">{children}</h3>;
+}
+
+const components: MDXComponents = {
   Image: RoundedImage,
-  //a: Link,
+  a: ALink,
+  h1: H1,
+  h2: H2,
+  h3: H3,
   Callout,
 };
 

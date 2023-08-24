@@ -64,8 +64,8 @@ module.exports = {
           '--tw-prose-captions': theme('colors.zinc.400'),
           '--tw-prose-code': theme('colors.zinc.700'),
           '--tw-prose-code-bg': theme('colors.zinc.300 / 0.2'),
-          '--tw-prose-pre-code': theme('colors.zinc.100'),
-          '--tw-prose-pre-bg': theme('colors.zinc.900'),
+          '--tw-prose-pre-code': theme('colors.zinc.600'),
+          '--tw-prose-pre-bg': theme('colors.zinc.100'),
           '--tw-prose-pre-border': 'transparent',
           '--tw-prose-th-borders': theme('colors.zinc.200'),
           '--tw-prose-td-borders': theme('colors.zinc.100'),
@@ -84,8 +84,8 @@ module.exports = {
           '--tw-prose-invert-captions': theme('colors.zinc.500'),
           '--tw-prose-invert-code': theme('colors.zinc.300'),
           '--tw-prose-invert-code-bg': theme('colors.zinc.200 / 0.05'),
-          '--tw-prose-invert-pre-code': theme('colors.zinc.100'),
-          '--tw-prose-invert-pre-bg': 'rgb(0 0 0 / 0.4)',
+          '--tw-prose-invert-pre-code': theme('colors.zinc.600'),
+          '--tw-prose-invert-pre-bg': theme('colors.zinc.100'),
           '--tw-prose-invert-pre-border': theme('colors.zinc.200 / 0.1'),
           '--tw-prose-invert-th-borders': theme('colors.zinc.700'),
           '--tw-prose-invert-td-borders': theme('colors.zinc.800'),
@@ -110,13 +110,13 @@ module.exports = {
           h2: {
             fontSize: theme('fontSize.xl')[0],
             lineHeight: theme('lineHeight.7'),
-            marginTop: theme('spacing.20'),
+            marginTop: theme('spacing.10'),
             marginBottom: theme('spacing.4'),
           },
           h3: {
             fontSize: theme('fontSize.base')[0],
             lineHeight: theme('lineHeight.7'),
-            marginTop: theme('spacing.16'),
+            marginTop: theme('spacing.8'),
             marginBottom: theme('spacing.4'),
           },
           ':is(h2, h3) + *': {
@@ -304,4 +304,4 @@ module.exports = {
       },
     }),
   },
-}
+};
