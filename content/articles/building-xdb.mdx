@@ -6,7 +6,7 @@
   tags: ['xdb']
 ---
 
-xdb is a Go SDK that offers an abstraction layer over multiple databases in order to simplify data modeling, ingestion, querying, and operations.
+xdb is a Go SDK that combines multiple storage engines with a single abstraction and schema. xdb provides a simple consistent API to ingest and query data.
 
 # Inspiration
 
@@ -45,29 +45,27 @@ Here's a reduced example of Twitter in N-Quads:
 
 xdb has a simple data model inspired by N-Quads.
 
-## Node
+## Record
 
-A node is a logical entity uniquely identified by `Kind` and `ID`, both combined to form a `Key`.
+A record is a logical entity containing attributes and edges. A record is uniquely identified by `ID`. Similar records are grouped by `Kind`.
 
-The Subject of an N-Quad is the `Key` of the node.
+A `Key` is the primary key of a record. A `Key` is a combination of `Kind` and `ID`.
+
+The Subject of an N-Quad is a unique reference to a record.
 
 ## Attribute
 
-Attributes have a `name` and a `value`. Attributes belong to a node. An attribute can be uniquely identified by the `Key` and `name`.
+Attributes have a `name` and a `value`. Attributes always belong to a record.
 
 The Predicate of an N-Quad is the `name` of the attribute. The `value` is the Object.
 
 ## Value
 
-xdb supports all Go primitive types as values. Values can be scalars or lists. Internally, xdb represents all values as bytes.
-
-Custom types are supported by implementing the `Value` interface.
+xdb supports all Go primitive types as values. Values can be scalar types, arrays, or custom types.
 
 ## Edge
 
-Edges represent directed relationships between nodes. Think of an edge as a attribute whose value is a `Key` of target node. Edges can have additional metadata.
-
-An edge can be uniquely identified by combination of source node `Key`, edge `name`, and target node `Key`.
+Edges represent directed relationships between records. Think of an edge as a attribute whose value is a `Key` of target record. Edges can have additional metadata to hold information about the relationship.
 
 # Schema
 
