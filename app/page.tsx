@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+
 
 import clsx from 'clsx';
 import { allArticles, allSnippets } from 'contentlayer/generated';
@@ -23,12 +23,19 @@ import { formatDate } from '@/lib/formatDate';
 import photos from '@/lib/photos';
 
 const resume: Experience[] = [
+ {
+    company: 'Gojek',
+    title: 'Senior Principal Architect',
+    logo: logoGojek,
+    start: '2022',
+    current: true,
+  },
   {
     company: 'Gojek',
     title: 'Senior Engineering Manager',
     logo: logoGojek,
     start: '2019',
-    current: true,
+    end: '2022',
   },
   {
     company: 'PaGaLGuY',
