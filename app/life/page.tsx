@@ -9,8 +9,8 @@ import type { Event } from 'contentlayer/generated';
 import moment from 'moment';
 import type { Metadata } from 'next';
 
-import { SimpleLayout } from '@/components/simple_layout';
 import { Header, Tooltip } from '@/components/life_sections';
+import { SimpleLayout } from '@/components/simple_layout';
 
 export const metadata: Metadata = {
   title: 'Life',
@@ -114,6 +114,7 @@ export default function Life() {
                         if (specificDate < nextYear && events.length > 0) {
                           return events.map((event) => (
                             <Tooltip
+                              key={event.title}
                               message={`Week of ${weekStart.format(
                                 'MMM Do, YYYY'
                               )}`}
@@ -123,7 +124,11 @@ export default function Life() {
                           ));
                         }
 
-                        return <div className="w-6"> </div>;
+                        return (
+                          <div key={k} className="w-6">
+                            {' '}
+                          </div>
+                        );
                       })}
                     </div>
                   );

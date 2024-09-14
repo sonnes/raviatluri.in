@@ -50,16 +50,16 @@ export default function Uses() {
     <>
       <SimpleLayout
         title="Tools"
-        intro="Tech I'm currently using for writing, coding and photo editing."
+        intro="Tech that I am currently using for writing, coding and photo editing."
       >
         <div className="space-y-20">
           <ToolsSection title="Workstation">
             <Tool title="Mac Mini, M2 Pro, 32GB RAM (2023)">
               This is my primary workstation. I use it for everything from
-              writing code to editing photos. It's a beast.
+              writing code to editing photos. It is a beast.
             </Tool>
             <Tool title="15” MacBook Pro, 16GB RAM (2018)">
-              This was a standard issue work laptop at Gojek. I use it when I'm
+              This was a standard issue work laptop at Gojek. I use it when I am
               away from my home office.
             </Tool>
             <Tool title="Logitech MX Master 2S">
