@@ -158,10 +158,13 @@ export default function Header(): JSX.Element {
         >
           <Container>
             <div className="relative flex gap-4">
-              <div className="flex flex-1">
+              <div className="flex flex-1 items-center">
                 <AvatarContainer>
                   <Avatar />
                 </AvatarContainer>
+                <div className="ml-4">
+                  <span className="text-lg font-bold">Ravi Atluri</span>
+                </div>
               </div>
               <div className="flex flex-1 justify-end md:justify-center">
                 <MobileNavigation

@@ -74,29 +74,6 @@ export const Article = defineDocumentType(() => ({
   computedFields,
 }));
 
-export const Snippet = defineDocumentType(() => ({
-  name: 'Snippet',
-  filePathPattern: `snippets/**/*.mdx`,
-  contentType: 'mdx',
-  fields: {
-    title: {
-      type: 'string',
-      required: true,
-    },
-    date: {
-      type: 'string',
-      required: true,
-    },
-    image: {
-      type: 'string',
-    },
-    author: {
-      type: 'string',
-    },
-  },
-  computedFields,
-}));
-
 export const Event = defineNestedType(() => ({
   name: 'Event',
   fields: {
@@ -136,7 +113,7 @@ export const Timeline = defineDocumentType(() => ({
 
 export default makeSource({
   contentDirPath: 'content',
-  documentTypes: [Article, Snippet, Timeline],
+  documentTypes: [Article, Timeline],
   mdx: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [
