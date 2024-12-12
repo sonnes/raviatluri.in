@@ -41,7 +41,7 @@ export default function About() {
             </h2>
             <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
               <p>
-                I&apos;m Ravi, a Product Engineer at GoFood in Gojek, where I
+                I&apos;m Ravi, a Senior Principal Architect at Gojek, where I
                 work on building scalable and reliable systems & abstractions
                 for the product engineering teams. I have been{' '}
                 <a

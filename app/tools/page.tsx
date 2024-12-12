@@ -62,7 +62,7 @@ export default function Uses() {
               This was a standard issue work laptop at Gojek. I use it when I am
               away from my home office.
             </Tool>
-            <Tool title="Logitech MX Master 2S">
+            <Tool title="Logitech MX Master 3S">
               This has been my go-to mouse for years.
             </Tool>
           </ToolsSection>

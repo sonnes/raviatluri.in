@@ -91,9 +91,9 @@ function Article({ article }: { article: Article }) {
       <p className="relative z-10 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
         {article.description}
       </p>
-      <div className="relative z-10 mt-4 flex items-center text-sm font-medium text-red-500">
-        Read article
-      </div>
+      <a href={article.slug} className="relative z-10 mt-4 flex items-center text-sm font-medium text-red-500">
+        Read
+      </a>
     </article>
   );
 }
@@ -105,7 +105,7 @@ export default async function Home() {
       <Container className="mt-9">
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-[1fr,400px]">
           {/* Main Content (Left Side) */}
-          <div className="space-y-20">
+          <div className="space-y-20 mt-20">
             <div className="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
               <div className="flex flex-col space-y-16">
                 {articles.map((article) => (
@@ -116,10 +116,10 @@ export default async function Home() {
           </div>
 
           {/* Sidebar (Right Side) */}
-          <div className="space-y-10 lg:pl-16">
+          <div className="space-y-10 lg:pl-16 mt-20">
             {/* Bio Section */}
             <div>
-              <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
+              <p className="text-base text-zinc-600 dark:text-zinc-400">
                 Sr. Principal Architect at Gojek. Working on scalable and reliable
                 systems & abstractions for product engineering teams.
               </p>
