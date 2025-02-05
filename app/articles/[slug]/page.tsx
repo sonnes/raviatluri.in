@@ -74,7 +74,7 @@ export default async function Article({
           <div className="mx-auto max-w-2xl">
             <article>
               <header className="flex flex-col">
-                <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+                <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
                   {post.title}
                 </h1>
                 <time
@@ -90,7 +90,7 @@ export default async function Article({
                     {post.tags.map((tag) => (
                       <a
                         href={`/tags/${tag}`}
-                        className="mb-2 mr-2 text-sm text-zinc-400 hover:text-zinc-500 dark:text-zinc-500 dark:hover:text-zinc-400"
+                        className="mb-2 mr-2 text-md text-zinc-400 hover:text-zinc-500 dark:text-zinc-500 dark:hover:text-zinc-400"
                         key={tag}
                       >
                         #{tag}

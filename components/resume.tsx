@@ -14,7 +14,7 @@ export type Experience = {
 export default function Resume({ resume }: { resume: Experience[] }) {
   return (
     <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-      <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+      <h2 className="flex text-lg font-semibold text-zinc-900 dark:text-zinc-100">
         <BriefcaseIcon className="h-6 w-6 flex-none" />
         <span className="ml-3">Work</span>
       </h2>
@@ -26,16 +26,16 @@ export default function Resume({ resume }: { resume: Experience[] }) {
             </div>
             <dl className="flex flex-auto flex-wrap gap-x-2">
               <dt className="sr-only">Company</dt>
-              <dd className="w-full flex-none text-sm font-medium text-zinc-900 dark:text-zinc-100">
+              <dd className="w-full flex-none text-md font-medium text-zinc-900 dark:text-zinc-100">
                 {role.company}
               </dd>
               <dt className="sr-only">Role</dt>
-              <dd className="text-xs text-zinc-500 dark:text-zinc-400">
+              <dd className="text-sm text-zinc-500 dark:text-zinc-400">
                 {role.title}
               </dd>
               <dt className="sr-only">Date</dt>
               <dd
-                className="ml-auto text-xs text-zinc-400 dark:text-zinc-500"
+                className="ml-auto text-sm text-zinc-400 dark:text-zinc-500"
                 aria-label={`${role.start} until ${
                   role.current ? 'Present' : role.end
                 }`}

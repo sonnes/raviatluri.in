@@ -78,7 +78,7 @@ export function MDX({ code }: MDXProps) {
   const Component = useMDXComponent(code);
 
   return (
-    <article className="prose-quoteless prose-neutral prose dark:prose-invert">
+    <article className="text-lg prose dark:prose-invert">
       <Component components={components} />
     </article>
   );

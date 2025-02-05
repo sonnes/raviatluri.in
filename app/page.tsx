@@ -51,11 +51,11 @@ const resume: Experience[] = [
 function Photos() {
   return (
     <div className="mt-6">
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {photos.slice(0, 6).map((image, imageIndex) => (
           <div
             key={imageIndex}
-            className="relative aspect-square overflow-hidden rounded-lg"
+            className="relative aspect-square overflow-hidden rounded-md"
           >
             <Image
               src={image.src}
@@ -75,23 +75,23 @@ function Article({ article }: { article: Article }) {
     <article className="group relative flex flex-col items-start">
       <div className="absolute -inset-x-4 -inset-y-6 z-0 scale-95 bg-zinc-50 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 dark:bg-zinc-800/50 sm:-inset-x-6 sm:rounded-2xl" />
       <div className="relative z-10 flex w-full items-center justify-between gap-4">
-        <h2 className="text-base font-semibold tracking-tight text-zinc-800 dark:text-zinc-100">
+        <h2 className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-zinc-100">
           <a href={article.slug}>
             <span className="absolute -inset-x-4 -inset-y-6 z-20 sm:-inset-x-6 sm:rounded-2xl" />
             <span className="relative z-10">{article.title}</span>
           </a>
         </h2>
         <time
-          className="flex items-center text-sm text-zinc-400 dark:text-zinc-500"
+          className="flex items-center text-md text-zinc-400 dark:text-zinc-500"
           dateTime={article.date}
         >
           {formatDate(article.date)}
         </time>
       </div>
-      <p className="relative z-10 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+      <p className="relative z-10 mt-2 text-md text-zinc-600 dark:text-zinc-400">
         {article.description}
       </p>
-      <a href={article.slug} className="relative z-10 mt-4 flex items-center text-sm font-medium text-red-500">
+      <a href={article.slug} className="relative z-10 mt-4 flex items-center text-md font-medium text-red-500">
         Read
       </a>
     </article>
@@ -119,7 +119,7 @@ export default async function Home() {
           <div className="space-y-10 lg:pl-16 mt-20">
             {/* Bio Section */}
             <div>
-              <p className="text-base text-zinc-600 dark:text-zinc-400">
+              <p className="text-lg text-zinc-600 dark:text-zinc-400">
                 Sr. Principal Architect at Gojek. Working on scalable and reliable
                 systems & abstractions for product engineering teams.
               </p>
@@ -152,8 +152,8 @@ export default async function Home() {
             <Resume resume={resume} />
 
             {/* Categories Section */}
-            <div>
-              <h2 className="mb-4 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+            <div className="border-b border-zinc-100 dark:border-zinc-700/40 pb-4">
+              <h2 className="mb-4 text-lg font-medium text-zinc-800 dark:text-zinc-100">
                 Tags
               </h2>
               <div className="flex flex-wrap gap-2">
