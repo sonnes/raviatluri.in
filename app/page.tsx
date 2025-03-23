@@ -1,28 +1,36 @@
 import Image from 'next/image';
 
+import ArticleCard from '@/components/article';
 import { Container } from '@/components/container';
 import { GitHubIcon, InstagramIcon, LinkedInIcon, TwitterIcon } from '@/components/icons';
 import { SocialLink } from '@/components/links';
 import Photos from '@/components/photos';
 import Resume from '@/components/resume';
+import { getAllArticles } from '@/content/articles';
+import resume from '@/content/resume';
 
 export default async function Home() {
+  const articles = await getAllArticles();
+
   return (
     <>
       <Container className="mt-9">
-        <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-[1fr,400px]">
-          {/* Main Content (Left Side) */}
-          <div className="space-y-20 mt-20">
-            <div className="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
-              <div className="flex flex-col space-y-16"></div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Main content area - stacks on mobile, takes up 2/3 on larger screens */}
+          <div className="md:col-span-2">
+            <div className="space-y-10 border-l border-zinc-200 pl-6">
+              <h2 className="text-xl font-bold">Recent Articles</h2>
+              {articles.map(article => (
+                <ArticleCard key={article.slug} article={article} />
+              ))}
             </div>
           </div>
 
-          {/* Sidebar (Right Side) */}
-          <div className="space-y-10 lg:pl-16 mt-20">
-            {/* Bio Section */}
-            <div>
-              <p className="text-lg text-zinc-600 dark:text-zinc-400">
+          {/* Sidebar - stacks on mobile, takes up 1/3 on larger screens */}
+          <div className="md:col-span-1">
+            <div className="space-y-4 ml-6">
+              <h1 className="text-2xl font-bold">Ravi Atluri</h1>
+              <p className="text-zinc-600">
                 Sr. Principal Architect at Gojek. Working on scalable and reliable systems &
                 abstractions for product engineering teams.
               </p>
@@ -48,28 +56,9 @@ export default async function Home() {
                   icon={LinkedInIcon}
                 />
               </div>
+              <Resume />
+              <Photos />
             </div>
-
-            {/* Work History */}
-            <Resume />
-
-            {/* Categories Section */}
-            <div className="border-b border-zinc-100 dark:border-zinc-700/40 pb-4">
-              <h2 className="mb-4 text-lg font-medium text-zinc-800 dark:text-zinc-100">Tags</h2>
-              <div className="flex flex-wrap gap-2">
-                {['XDB', 'ALS', 'Accessibility', 'Go'].map(category => (
-                  <span
-                    key={category}
-                    className="rounded-full bg-zinc-100 px-3 py-1 text-sm text-zinc-800 dark:bg-zinc-800 dark:text-zinc-100"
-                  >
-                    {category}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Photos Section */}
-            <Photos />
           </div>
         </div>
       </Container>
