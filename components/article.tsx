@@ -4,21 +4,26 @@ import type { Article } from '@/content/articles';
 
 export default function ArticleCard({ article }: { article: Article }) {
   return (
-    <article className="flex flex-col items-start">
-      <div className="" />
-      <div className="flex w-full items-center justify-between gap-4">
-        <h2 className="text-xl font-semibold tracking-tight text-zinc-600">
-          <Link href={article.href}>
-            <span>{article.title}</span>
-          </Link>
-        </h2>
-        <time className="flex items-center text-md text-zinc-400" dateTime={article.date}>
-          {formatDate(article.date)}
-        </time>
+    <article className="group flex flex-col items-start group-hover:bg-zinc-100 rounded-lg">
+      <div className="flex items-center gap-2 text-sm text-zinc-400">
+        <time dateTime={article.date}>{formatDate(article.date)}</time>
       </div>
-      <p className="mt-2 text-md text-zinc-500">{article.description}</p>
-      <Link href={article.href} className="mt-4 flex items-center text-md font-medium text-red-500">
-        Read
+
+      <h2 className="mt-2 text-xl font-semibold tracking-tight text-zinc-800">
+        <Link href={article.href}>
+          <span className="group-hover:text-red-500 transition-colors duration-200">
+            {article.title}
+          </span>
+        </Link>
+      </h2>
+
+      <p className="mt-2 text-base text-zinc-600">{article.description}</p>
+
+      <Link
+        href={article.href}
+        className="mt-4 text-sm font-medium text-zinc-500 group-hover:text-red-500 transition-colors duration-200"
+      >
+        Read &rarr;
       </Link>
     </article>
   );
