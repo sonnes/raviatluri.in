@@ -1,0 +1,33 @@
+---
+  author: 'You'
+  date: '2023-08-09'
+  title: 'Using mockery with go generate'
+  description: 'Example of using mockery with go generate'
+  tags: ['go', 'mockery']
+---
+
+This is a simple example of how to use mockery with go generate. It is my preferred way of generating mocks, because the mocks configuration is co-located with the interface definition.
+
+1. Install mockery
+
+```bash
+go install github.com/vektra/mockery/v2@2.23.4 # use latest version
+```
+
+2. Add a go:generate comment to your interface
+
+```go
+//go:generate mockery -name=MyInterface -output=mocks -outpkg=mocks -case=underscore
+type MyInterface interface {
+    DoSomething()
+}
+
+```
+
+3. Run go generate
+
+```bash
+go generate ./...
+```
+
+Mockery - https://vektra.github.io/mockery/latest/

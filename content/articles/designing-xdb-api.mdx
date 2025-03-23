@@ -1,0 +1,69 @@
+---
+  author: 'You'
+  date: '2023-09-20'
+  title: 'Designing XDB API'
+  description: 'Walkthrough of the XDB data models and APIs'
+  tags: ['xdb']
+---
+
+Let's start by implementing the data model, persistence and retrieval APIs.
+
+`Tuple` is the core building block of XDB. It is a combination of key, name and value. Both attributes and edges are represented as tuples.
+
+### Attribute
+
+Attributes are created with `xdb.NewAttr` function.
+
+```go
+text := xdb.NewAttr(
+  xdb.NewKey("Post", "9bsv0s5ocl6002kdg0fg"),
+  "title",
+  xdb.String("Hello World"),
+)
+```
+
+<Image
+  src="/images/designing-xdb-api/attribute-structure.png"
+  alt="Attribute Structure"
+/>
+
+XDB implements a value type system allowing developers to store and retrieve Go primitive types, lists and custom types. Custom types must implement one of `encoding.BinaryMarshaler` or `json.Marshaler` interfaces.
+
+### Edge
+
+Edges are tuples whose value is a Key. Edges are created with `xdb.NewEdge` function.
+
+```go
+liked := xdb.NewEdge(
+  xdb.NewKey("Post", "9bsv0s5ocl6002kdg0fg"),
+  "liked_by",
+  xdb.NewKey("User", "9bsv0s3p32i002qvnf50"),
+)
+```
+
+<Image
+  src="/images/designing-xdb-api/edge-structure.png"
+  alt="Edge Structure"
+/>
+
+Edges have a special nature. 1:1 edges behave like attributes. They can be retrieved by specifying the key and name.
+
+1:N edges can be retrieved by in two ways. First, by specifying the key and name. This will return all the edges with the name. Second, by specifying the key, name and the target key. This is useful to check if an edge exists.
+
+### Tuple Store
+
+The first capability of XDB is to store and retrieve tuples. The `xdb.TupleStore` interface defines the persistence API.
+
+```go
+type TupleStore interface {
+	PutTuples(ctx context.Context, tuples ...*Tuple) error
+	GetTuples(ctx context.Context, refs ...*Ref) ([]*Tuple, error)
+	DeleteTuples(ctx context.Context, refs ...*Ref) error
+}
+```
+
+`Ref` is a reference to any tuple. It is used as a way to refer to a tuple in APIs.
+
+All storage engines must, at least, implement `TupleStore` interface. XDB provides a `MemoryStore` as a reference implementation and for testing.
+
+The XDB codebase is available at https://github.com/xdb-dev/xdb

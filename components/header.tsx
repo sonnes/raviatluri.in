@@ -29,11 +29,11 @@ export default function Header() {
               <AvatarContainer>
                 <Avatar />
               </AvatarContainer>
-              <div className="ml-4">
+              {/* <div className="ml-4">
                 <span className="text-2xl font-bold bg-gradient-to-br from-zinc-500 to-zinc-800 dark:from-zinc-100 dark:to-zinc-500 text-transparent bg-clip-text">
                   Ravi Atluri
                 </span>
-              </div>
+              </div> */}
             </div>
             <div className="flex justify-end md:justify-center">
               <Navigation />

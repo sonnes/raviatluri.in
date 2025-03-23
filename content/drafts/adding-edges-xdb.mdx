@@ -1,0 +1,66 @@
+---
+  author: 'You'
+  date: '2023-05-09'
+  title: 'Adding Edges to XDB'
+  description: 'Introducing Edges as a new abstraction in XDB'
+  tags: ['xdb']
+---
+
+An edge is a directed relationship between two nodes. Edges can be used to represent many different kinds of relationships in domain models, such as:
+
+- A user following another user
+- A user liking a post
+- A user commenting on a post
+- Posts/comments authored by a user
+
+Edges are made of a source node, a target node, and a name. The name is used to distinguish between different kinds of edges between the same two nodes.
+
+Edges of same name in a source node are ordered by creation time. Custom ordering is supported by passing a `Score` during edge creation.
+
+Edges also support storing attributes, which can be used to store additional information about the relationship.
+
+## API
+
+Creating edges is similar to creating attributes:
+
+```go
+var store xdb.Store
+
+user := xdb.NewKey("User", "123")
+post := xdb.NewKey("Post", "456")
+
+edges := []*xdb.Edge{
+  xdb.NewEdge(user, "liked", post)
+  xdb.NewEdge(post, "liked_by", user)
+  xdb.NewEdge(post, "author", user, xdb.Score(1.0))
+}
+
+err := store.PutEdges(ctx, edges...)
+```
+
+There are two ways to query edges:
+
+Get an edge by its source, target, and name. This returns the edge along with its score and attributes. This is useful when you want to get a specific edge or check if an edge exists.
+
+```go
+user := xdb.NewKey("User", "123")
+post := xdb.NewKey("Post", "456")
+
+edgeRefs := []*xdb.Edge{
+  xdb.NewEdge(user, "liked", post)
+  xdb.NewEdge(post, "liked_by", user)
+  xdb.NewEdge(post, "author", user)
+}
+
+edges, missing, err := store.GetEdges(ctx, edgeRefs...)
+```
+
+Or get a list of edges of a given name from a source node. This is useful when you want to iterate or paginate over a list of edges.
+
+```go
+user := xdb.NewKey("User", "123")
+
+q := xdb.NewEdgeQuery(user, "liked", xdb.Page(1,50))
+
+edges, err := store.QueryEdges(ctx, q)
+```
