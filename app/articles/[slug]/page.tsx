@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { MDXRemote, compileMDX } from 'next-mdx-remote/rsc';
 import { notFound } from 'next/navigation';
 
@@ -7,6 +8,48 @@ import path from 'path';
 import { Container } from '@/components/container';
 import { useMDXComponents } from '@/components/mdx';
 import { type Article, type Frontmatter, getAllArticles } from '@/content/articles';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata | undefined> {
+  const { slug } = await params;
+
+  const post = await getArticle(slug);
+
+  if (!post) {
+    return;
+  }
+
+  const { title, date: publishedTime, description, image } = post;
+  const ogImage = image
+    ? `https://raviatluri.in${image}`
+    : `https://raviatluri.in/og?title=${title}&subtitle=${description}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      publishedTime,
+      url: `https://raviatluri.in/${slug}`,
+      images: [
+        {
+          url: ogImage,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImage],
+    },
+  };
+}
 
 export default async function Article({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

@@ -19,7 +19,7 @@ import clsx from 'clsx';
 import navigation from '@/content/navigation';
 
 function NavItem({ href, children }: { href: string; children: React.ReactNode }) {
-  let isActive = usePathname().startsWith(href);
+  const isActive = usePathname().startsWith(href);
 
   return (
     <li>
@@ -106,7 +106,7 @@ export function MobileNavigation({ className }: { className?: string }) {
             className="fixed inset-x-4 top-8 z-50 origin-top rounded-3xl bg-white p-8 ring-1 ring-zinc-900/5 dark:bg-zinc-900 dark:ring-zinc-800"
           >
             <div className="flex flex-row-reverse items-center justify-between">
-              <PopoverButton aria-name="Close menu" className="-m-1 p-1">
+              <PopoverButton aria-label="Close menu" className="-m-1 p-1">
                 <XMarkIcon className="h-6 w-6 text-zinc-500 dark:text-zinc-400" />
               </PopoverButton>
 
