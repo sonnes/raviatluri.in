@@ -26,7 +26,7 @@ Card.Link = function CardLink({
   ...props
 }: {
   children: React.ReactNode;
-  [key: string]: any;
+  [key: string]: string | React.ReactNode;
 }) {
   return (
     <>
@@ -81,7 +81,7 @@ Card.Eyebrow = function CardEyebrow({
   decorate?: boolean;
   className?: string;
   children: React.ReactNode;
-  [key: string]: any;
+  [key: string]: string | boolean | React.ReactNode | React.ElementType | undefined;
 }) {
   return (
     <Component

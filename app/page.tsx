@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Link from 'next/link';
 
 import ArticleCard from '@/components/article';
 import { Container } from '@/components/container';
@@ -49,9 +49,9 @@ export default async function Home() {
           <div className="md:col-span-2">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-xl font-bold">Recent Articles</h2>
-              <a href="/articles" className="text-sm text-zinc-500 hover:text-zinc-800">
+              <Link href="/articles" className="text-sm text-zinc-500 hover:text-zinc-800">
                 View all →
-              </a>
+              </Link>
             </div>
             <div className="space-y-12 border-l border-zinc-200 pl-6">
               {articles.slice(0, 5).map(article => (

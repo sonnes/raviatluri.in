@@ -78,27 +78,47 @@ const customComponents = {
       {...props}
     />
   ),
-  img: (props: ComponentPropsWithoutRef<'img'>) => <img className="rounded-lg" {...props} />,
-  Image: (props: React.ComponentProps<typeof Image>) => (
-    <div className="grid grid-cols-1 justify-items-center mt-4 mb-8">
-      <div>
-        <Image
-          width={800}
-          height={600}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="rounded-lg"
-          {...props}
-        />
+  img: (props: ComponentPropsWithoutRef<'img'>) => {
+    const { width = 800, height = 600, alt = '', src, ...rest } = props;
+    if (!src) return null;
+    return (
+      <Image
+        src={src}
+        width={Number(width)}
+        height={Number(height)}
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        className="rounded-lg"
+        alt={alt}
+        {...rest}
+      />
+    );
+  },
+  Image: (props: React.ComponentProps<typeof Image>) => {
+    const { alt = '', src, ...rest } = props;
+    if (!src) return null;
+    return (
+      <div className="grid grid-cols-1 justify-items-center mt-4 mb-8">
+        <div>
+          <Image
+            src={src}
+            width={800}
+            height={600}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="rounded-lg"
+            alt={alt}
+            {...rest}
+          />
+        </div>
+        <div className="text-xs italic text-gray-800">{props.alt}</div>
       </div>
-      <div className="text-xs italic text-gray-800">{props.alt}</div>
-    </div>
-  ),
+    );
+  },
 };
 
 export function CustomMDX(props: MDXRemoteProps) {
   return <MDXRemote {...props} components={customComponents} />;
 }
 
-export function useMDXComponents() {
+export function getMDXComponents() {
   return customComponents;
 }

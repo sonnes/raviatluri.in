@@ -1,19 +1,14 @@
-import { Metadata } from 'next';
-import { MDXRemote, compileMDX } from 'next-mdx-remote/rsc';
+import { compileMDX } from 'next-mdx-remote/rsc';
 import { notFound } from 'next/navigation';
 
 import fs from 'fs/promises';
 import path from 'path';
 
 import { Container } from '@/components/container';
-import { useMDXComponents } from '@/components/mdx';
+import { getMDXComponents } from '@/components/mdx';
 import { type Article, type Frontmatter, getAllArticles } from '@/content/articles';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata | undefined> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
   const post = await getArticle(slug);
@@ -106,7 +101,7 @@ async function getArticle(slug: string) {
     options: {
       parseFrontmatter: true,
     },
-    components: useMDXComponents(),
+    components: getMDXComponents(),
   });
 
   return {

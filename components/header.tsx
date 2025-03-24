@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 import clsx from 'clsx';
 
 import Avatar from '@/components/avatar';
@@ -7,7 +5,13 @@ import Avatar from '@/components/avatar';
 import { Container } from './container';
 import Navigation from './nav';
 
-function AvatarContainer({ className, ...props }: { className?: string; [key: string]: any }) {
+function AvatarContainer({
+  className,
+  ...props
+}: {
+  className?: string;
+  [key: string]: string | React.ReactNode | undefined;
+}) {
   return (
     <div
       className={clsx(

@@ -8,7 +8,7 @@ import avatarImage from '@/public/images/avatar.jpg';
 type Props = {
   large?: boolean;
   className?: string;
-  [key: string]: any;
+  [key: string]: string | boolean | undefined;
 };
 
 export default function Avatar({ large = false, className, ...props }: Props) {
