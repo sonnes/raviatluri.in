@@ -1,17 +1,10 @@
-import Image, { StaticImageData } from 'next/image';
+import Image from 'next/image';
 
-import { BriefcaseIcon } from './icons';
+import { BriefcaseIcon } from '@heroicons/react/24/outline';
 
-export type Experience = {
-  company: string;
-  title: string;
-  logo: StaticImageData;
-  start: string;
-  end?: string;
-  current?: boolean;
-};
+import resume from '@/content/resume';
 
-export default function Resume({ resume }: { resume: Experience[] }) {
+export default function Resume() {
   return (
     <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
       <h2 className="flex text-lg font-semibold text-zinc-900 dark:text-zinc-100">
@@ -26,25 +19,18 @@ export default function Resume({ resume }: { resume: Experience[] }) {
             </div>
             <dl className="flex flex-auto flex-wrap gap-x-2">
               <dt className="sr-only">Company</dt>
-              <dd className="w-full flex-none text-md font-medium text-zinc-900 dark:text-zinc-100">
+              <dd className="w-full flex-none text-md font-semibold text-zinc-900 dark:text-zinc-100">
                 {role.company}
               </dd>
               <dt className="sr-only">Role</dt>
-              <dd className="text-sm text-zinc-500 dark:text-zinc-400">
-                {role.title}
-              </dd>
+              <dd className="text-sm text-zinc-500 dark:text-zinc-400">{role.title}</dd>
               <dt className="sr-only">Date</dt>
               <dd
                 className="ml-auto text-sm text-zinc-400 dark:text-zinc-500"
-                aria-label={`${role.start} until ${
-                  role.current ? 'Present' : role.end
-                }`}
+                aria-label={`${role.start} until ${role.current ? 'Present' : role.end}`}
               >
-                <time dateTime={role.start}>{role.start}</time>{' '}
-                <span aria-hidden="true">—</span>{' '}
-                <time dateTime={role.end}>
-                  {role.current ? 'Present' : role.end}
-                </time>
+                <time dateTime={role.start}>{role.start}</time> <span aria-hidden="true">—</span>{' '}
+                <time dateTime={role.end}>{role.current ? 'Present' : role.end}</time>
               </dd>
             </dl>
           </li>

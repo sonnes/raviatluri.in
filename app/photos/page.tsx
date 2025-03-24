@@ -1,11 +1,9 @@
 import Image from 'next/image';
 
-import type { Metadata } from 'next';
+import { Container } from '@/components/container';
+import photos from '@/content/photos';
 
-import { SimpleLayout } from '@/components/simple_layout';
-import photos from '@/lib/photos';
-
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Photos',
   description: 'Landscapes, portraits, and more taken over the years.',
 };
@@ -13,10 +11,11 @@ export const metadata: Metadata = {
 export default function Photos() {
   return (
     <>
-      <SimpleLayout
-        title="Photos"
-        intro="Landscapes, portraits, and more taken over the years."
-      >
+      <Container className="mt-8 sm:mt-16">
+        <header className="max-w-3xl pb-10">
+          <h1 className="text-4xl font-bold tracking-tight text-zinc-800">{metadata.title}</h1>
+          <p className="mt-6 text-lg text-zinc-600">{metadata.description}</p>
+        </header>
         <ul role="list" className="grid grid-cols-1 gap-12 sm:grid-cols-2">
           {photos.map((image, imageIndex) => (
             <div
@@ -37,7 +36,7 @@ export default function Photos() {
             </div>
           ))}
         </ul>
-      </SimpleLayout>
+      </Container>
     </>
   );
 }

@@ -1,11 +1,23 @@
-import { Analytics } from '@vercel/analytics/react';
-import 'focus-visible';
 import type { Metadata } from 'next';
+import { Noto_Sans, Noto_Sans_Mono } from 'next/font/google';
 
-import { Footer } from '@/components/footer';
+import { Analytics } from '@vercel/analytics/react';
+import clsx from 'clsx';
+
+import Footer from '@/components/footer';
 import Header from '@/components/header';
-import ClientThemeProvider from '@/providers/theme-provider';
-import '@/styles/tailwind.css';
+
+import './globals.css';
+
+const notoSans = Noto_Sans({
+  variable: '--font-noto-sans',
+  subsets: ['latin'],
+});
+
+const notoMono = Noto_Sans_Mono({
+  variable: '--font-noto-sans-mono',
+  subsets: ['latin'],
+});
 
 export const metadata: Metadata = {
   title: {
@@ -49,23 +61,27 @@ export const metadata: Metadata = {
     shortcut: '/favicon.ico',
   },
 };
+
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html className="h-full antialiased" lang="en">
+    <html className="h-full" lang="en">
       <head />
-      <body className="flex h-full min-h-screen flex-col bg-white dark:bg-zinc-900">
-        <ClientThemeProvider>
-          <div className="relative">
-            <Header />
-            <main>{children}</main>
-            <Analytics />
-            <Footer />
-          </div>
-        </ClientThemeProvider>
+      <body
+        className={clsx(
+          'flex h-full min-h-screen flex-col bg-white',
+          notoSans.variable,
+          notoMono.variable,
+          'antialiased'
+        )}
+      >
+        <Header />
+        <main>{children}</main>
+        <Footer />
+        <Analytics />
       </body>
     </html>
   );

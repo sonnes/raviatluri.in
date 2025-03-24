@@ -1,31 +1,23 @@
+import { compileMDX } from 'next-mdx-remote/rsc';
 import { notFound } from 'next/navigation';
 
-import { allArticles } from 'contentlayer/generated';
-import type { Metadata } from 'next';
+import fs from 'fs/promises';
+import path from 'path';
 
 import { Container } from '@/components/container';
-import { MDX } from '@/components/mdx';
-import { formatDate } from '@/lib/formatDate';
+import { getMDXComponents } from '@/components/mdx';
+import { type Article, type Frontmatter, getAllArticles } from '@/content/articles';
 
-export async function generateStaticParams() {
-  return allArticles.map((post) => ({
-    slug: post.slug,
-  }));
-}
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata | undefined> {
-  const post = allArticles.find(
-    (post) => post.slug === `articles/${params.slug}`
-  );
+  const post = await getArticle(slug);
+
   if (!post) {
     return;
   }
 
-  const { title, date: publishedTime, description, image, slug } = post;
+  const { title, date: publishedTime, description, image } = post;
   const ogImage = image
     ? `https://raviatluri.in${image}`
     : `https://raviatluri.in/og?title=${title}&subtitle=${description}`;
@@ -54,14 +46,10 @@ export async function generateMetadata({
   };
 }
 
-export default async function Article({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const post = allArticles.find(
-    (post) => post.slug === `articles/${params.slug}`
-  );
+export default async function Article({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+
+  const post = await getArticle(slug);
 
   if (!post) {
     notFound();
@@ -69,41 +57,64 @@ export default async function Article({
 
   return (
     <>
-      <Container className="mt-16 lg:mt-32">
-        <div className="xl:relative">
-          <div className="mx-auto max-w-2xl">
-            <article>
-              <header className="flex flex-col">
-                <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
-                  {post.title}
-                </h1>
-                <time
-                  dateTime={post.date}
-                  className="order-first flex items-center text-base text-zinc-400 dark:text-zinc-500"
-                >
-                  <span className="h-4 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-500" />
-                  <span className="ml-3">{formatDate(post.date)}</span>
-                </time>
-                {/* render tags */}
+      <Container className="mt-8 lg:mt-16">
+        <div className="mx-auto max-w-2xl">
+          <article>
+            <header className="flex flex-col">
+              <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-800">{post.title}</h1>
+              <div className="flex items-center text-base text-zinc-400 my-4">
+                <time dateTime={post.date}>{post.date}</time>
                 {post.tags && (
-                  <div className="mt-4 flex flex-wrap">
-                    {post.tags.map((tag) => (
-                      <a
-                        href={`/tags/${tag}`}
-                        className="mb-2 mr-2 text-md text-zinc-400 hover:text-zinc-500 dark:text-zinc-500 dark:hover:text-zinc-400"
-                        key={tag}
-                      >
-                        #{tag}
-                      </a>
+                  <>
+                    <span className="mx-2">•</span>
+                    {post.tags.map((tag, index) => (
+                      <span key={tag}>
+                        <a
+                          href={`/tags/${tag}`}
+                          className="hover:text-zinc-500 dark:hover:text-zinc-400"
+                        >
+                          #{tag}
+                        </a>
+                        {index < post.tags.length - 1 && ', '}
+                      </span>
                     ))}
-                  </div>
+                  </>
                 )}
-              </header>
-              <MDX code={post.body.code} />
-            </article>
-          </div>
+              </div>
+            </header>
+            <div className="text-lg text-zinc-600">{post.content}</div>
+          </article>
         </div>
       </Container>
     </>
   );
+}
+
+async function getArticle(slug: string) {
+  const fileContent = await fs.readFile(
+    path.join(process.cwd(), 'content/articles', `${slug}.mdx`),
+    'utf-8'
+  );
+
+  const { content, frontmatter } = await compileMDX<Frontmatter>({
+    source: fileContent,
+    options: {
+      parseFrontmatter: true,
+    },
+    components: getMDXComponents(),
+  });
+
+  return {
+    ...frontmatter,
+    slug,
+    content,
+    href: `/articles/${slug}`,
+  } as Article;
+}
+
+export async function generateStaticParams() {
+  const articles = await getAllArticles();
+  return articles.map(article => ({
+    slug: article.slug,
+  }));
 }

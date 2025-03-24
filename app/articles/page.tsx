@@ -1,32 +1,28 @@
-import { allArticles } from 'contentlayer/generated';
-import type { Metadata } from 'next';
+import ArticleCard from '@/components/article';
+import { Container } from '@/components/container';
+import { getAllArticles } from '@/content/articles';
 
-import ArticleCard from '@/components/article_card';
-import { SimpleLayout } from '@/components/simple_layout';
-
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Articles',
-  description:
-    'All of my thoughts on Golang, system design, accessibility, ALS and more, collected in chronological order.',
+  description: 'All of my thoughts on Golang, system design, accessibility, ALS and more',
 };
 
-export default function ArticlesIndex() {
-  const articles = allArticles.sort((a, b) => b.date.localeCompare(a.date));
+export default async function ArticlesIndex() {
+  const articles = await getAllArticles();
 
   return (
-    <>
-      <SimpleLayout
-        title="Writing on system design, engineering management, accessibility and ALS"
-        intro="All of my thoughts on Golang, system design, accessibility, ALS and more, collected in chronological order."
-      >
-        <div className="">
-          <div className="flex max-w-3xl flex-col space-y-16">
-            {articles.map((article) => (
-              <ArticleCard key={article.slug} article={article} />
-            ))}
-          </div>
-        </div>
-      </SimpleLayout>
-    </>
+    <Container className="mt-8 sm:mt-16">
+      <header className="max-w-3xl mb-10 border-b border-zinc-200 dark:border-zinc-800 pb-10">
+        <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
+          {metadata.title}
+        </h1>
+        <p className="mt-6 text-lg text-zinc-600 dark:text-zinc-400">{metadata.description}</p>
+      </header>
+      <div className="flex max-w-3xl flex-col space-y-16">
+        {articles.map(article => (
+          <ArticleCard key={article.slug} article={article} />
+        ))}
+      </div>
+    </Container>
   );
 }

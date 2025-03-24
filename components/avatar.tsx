@@ -8,20 +8,12 @@ import avatarImage from '@/public/images/avatar.jpg';
 type Props = {
   large?: boolean;
   className?: string;
-  [key: string]: any;
+  [key: string]: string | boolean | undefined;
 };
-export default function Avatar({
-  large = false,
-  className,
-  ...props
-}: Props): JSX.Element {
+
+export default function Avatar({ large = false, className, ...props }: Props) {
   return (
-    <Link
-      href="/"
-      aria-label="Home"
-      className={clsx(className, 'pointer-events-auto')}
-      {...props}
-    >
+    <Link href="/" aria-label="Home" className={clsx(className, 'pointer-events-auto')} {...props}>
       <Image
         src={avatarImage}
         alt=""
