@@ -1,15 +1,10 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 
-import type { Metadata } from 'next';
-
 import { Container } from '@/components/container';
-import {
-  GitHubIcon,
-  InstagramIcon,
-  LinkedInIcon,
-  TwitterIcon,
-} from '@/components/icons';
+import { GitHubIcon, InstagramIcon, LinkedInIcon, TwitterIcon } from '@/components/icons';
 import { SocialLink } from '@/components/links';
+import Resume from '@/components/resume';
 import portraitImage from '@/public/images/portrait.jpg';
 
 export const metadata: Metadata = {
@@ -41,9 +36,9 @@ export default function About() {
             </h2>
             <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
               <p>
-                I&apos;m Ravi, a Senior Principal Architect at Gojek, where I
-                work on building scalable and reliable systems & abstractions
-                for the product engineering teams. I have been{' '}
+                I&apos;m Ravi, a Senior Principal Architect at Gojek, where I work on building
+                scalable and reliable systems & abstractions for the product engineering teams. I
+                have been{' '}
                 <a
                   href="https://twitter.com/sonnes/status/1474042833535262725"
                   target="_blank"
@@ -53,6 +48,7 @@ export default function About() {
                   living with ALS since 2019.
                 </a>
               </p>
+              <Resume />
             </div>
           </div>
           <div className="mt-6 flex gap-6 lg:pl-20">
