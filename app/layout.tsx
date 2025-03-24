@@ -72,7 +72,7 @@ export default function RootLayout({
       <head />
       <body
         className={clsx(
-          'flex h-full min-h-screen flex-col bg-white dark:bg-zinc-900',
+          'flex h-full min-h-screen flex-col bg-white',
           notoSans.variable,
           notoMono.variable,
           'antialiased'

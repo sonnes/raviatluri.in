@@ -14,31 +14,20 @@ type AnchorProps = ComponentPropsWithoutRef<'a'>;
 type BlockquoteProps = ComponentPropsWithoutRef<'blockquote'>;
 
 const customComponents = {
-  h1: (props: HeadingProps) => <h1 className="font-medium pt-12 mb-0" {...props} />,
-  h2: (props: HeadingProps) => (
-    <h2 className="text-gray-800 dark:text-zinc-200 font-medium mt-8 mb-3" {...props} />
-  ),
-  h3: (props: HeadingProps) => (
-    <h3 className="text-gray-800 dark:text-zinc-200 font-medium mt-8 mb-3" {...props} />
-  ),
-  h4: (props: HeadingProps) => <h4 className="font-medium" {...props} />,
-  p: (props: ParagraphProps) => (
-    <p className="text-gray-800 dark:text-zinc-300 leading-snug" {...props} />
-  ),
-  ol: (props: ListProps) => (
-    <ol className="text-gray-800 dark:text-zinc-300 list-decimal pl-5 space-y-2" {...props} />
-  ),
-  ul: (props: ListProps) => (
-    <ul className="text-gray-800 dark:text-zinc-300 list-disc pl-5 space-y-1" {...props} />
-  ),
+  h1: (props: HeadingProps) => <h1 className="text-2xl font-semibold mt-12 mb-3" {...props} />,
+  h2: (props: HeadingProps) => <h2 className="text-xl font-semibold mb-3" {...props} />,
+  h3: (props: HeadingProps) => <h3 className="text-lg font-semibold mb-3" {...props} />,
+  h4: (props: HeadingProps) => <h4 className="text-base font-semibold mb-3" {...props} />,
+  p: (props: ParagraphProps) => <p className="leading-snug my-4" {...props} />,
+  ol: (props: ListProps) => <ol className="list-decimal pl-5 space-y-2" {...props} />,
+  ul: (props: ListProps) => <ul className="list-disc pl-5 space-y-1" {...props} />,
   li: (props: ListItemProps) => <li className="pl-1" {...props} />,
-  em: (props: ComponentPropsWithoutRef<'em'>) => <em className="font-medium" {...props} />,
+  em: (props: ComponentPropsWithoutRef<'em'>) => <em className="" {...props} />,
   strong: (props: ComponentPropsWithoutRef<'strong'>) => (
-    <strong className="font-medium" {...props} />
+    <strong className="font-semibold" {...props} />
   ),
   a: ({ href, children, ...props }: AnchorProps) => {
-    const className =
-      'text-blue-500 hover:text-blue-700 dark:text-gray-400 hover:dark:text-gray-300 dark:underline dark:underline-offset-2 dark:decoration-gray-800';
+    const className = 'text-red-500 hover:text-red-700 dark:underline';
     if (href?.startsWith('/')) {
       return (
         <Link href={href} className={className} {...props}>
@@ -91,7 +80,7 @@ const customComponents = {
   ),
   img: (props: ComponentPropsWithoutRef<'img'>) => <img className="rounded-lg" {...props} />,
   Image: (props: React.ComponentProps<typeof Image>) => (
-    <div className="grid grid-cols-1 justify-items-center">
+    <div className="grid grid-cols-1 justify-items-center mt-4 mb-8">
       <div>
         <Image
           width={800}
