@@ -113,6 +113,16 @@ const customComponents = {
       </div>
     );
   },
+  Video: (props: ComponentPropsWithoutRef<'video'> & { alt: string }) => {
+    const { alt = '', src, ...rest } = props;
+    if (!src) return null;
+    return (
+      <div className="grid grid-cols-1 justify-items-center mt-4 mb-8">
+        <video className="rounded-lg" src={src} {...rest} />
+        <div className="text-xs italic text-gray-800">{alt}</div>
+      </div>
+    );
+  },
 };
 
 export function CustomMDX(props: MDXRemoteProps) {
