@@ -31,11 +31,14 @@ function Tool({
   children: React.ReactNode;
 }) {
   return (
-    <Card as="li">
-      <Card.Title as="h3" href={href}>
-        {title}
-      </Card.Title>
-      <Card.Description>{children}</Card.Description>
+    <Card as="li" className="group relative flex flex-col items-start">
+      <div className="absolute -inset-x-4 -inset-y-6 z-0 scale-95 bg-zinc-50 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 sm:-inset-x-6 sm:rounded-2xl" />
+      <div className="relative z-10">
+        <Card.Title as="h3" href={href}>
+          {title}
+        </Card.Title>
+        <Card.Description>{children}</Card.Description>
+      </div>
     </Card>
   );
 }
@@ -54,7 +57,7 @@ export default function Uses() {
               This is my primary workstation. I use it for everything from writing code to editing
               photos. It is a beast.
             </Tool>
-            <Tool title="15” MacBook Pro, 16GB RAM (2018)">
+            <Tool title='15" MacBook Pro, 16GB RAM (2018)'>
               This was a standard issue work laptop at Gojek. I use it when I am away from my home
               office.
             </Tool>

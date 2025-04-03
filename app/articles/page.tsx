@@ -4,7 +4,8 @@ import { getAllArticles } from '@/content/articles';
 
 export const metadata = {
   title: 'Articles',
-  description: 'All of my thoughts on Golang, system design, accessibility, ALS and more',
+  description:
+    'All of my thoughts on building products, Golang, system design, accessibility, ALS and more',
 };
 
 export default async function ArticlesIndex() {
@@ -18,7 +19,7 @@ export default async function ArticlesIndex() {
         </h1>
         <p className="mt-6 text-lg text-zinc-600 dark:text-zinc-400">{metadata.description}</p>
       </header>
-      <div className="flex max-w-3xl flex-col space-y-16">
+      <div className="flex max-w-3xl flex-col space-y-16 border-l border-zinc-200 pl-6">
         {articles.map(article => (
           <ArticleCard key={article.slug} article={article} />
         ))}

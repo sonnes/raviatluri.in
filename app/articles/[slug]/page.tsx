@@ -82,7 +82,7 @@ export default async function Article({ params }: { params: Promise<{ slug: stri
                 )}
               </div>
             </header>
-            <div className="text-lg text-zinc-600">{post.content}</div>
+            <div className="text-md text-zinc-600">{post.content}</div>
           </article>
         </div>
       </Container>
