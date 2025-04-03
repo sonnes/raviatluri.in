@@ -1,65 +1,150 @@
 ---
-  author: 'Ravi Atluri'
-  date: '2023-04-24'
-  description:
-    'xdb is an attempt at creating an abstraction to simplify data storage and retrieval for product engineers.'
-  title: 'Building XDB'
-  tags: ['xdb']
+author: 'Ravi Atluri'
+date: '2023-08-24'
+title: 'Building xdb'
+description: xdb is a new type of data toolkit that simplifies application development and database operations.
+tags: ['xdb']
 ---
 
-This is the first post in a series of posts on building xdb. xdb is an attempt at creating an abstraction to simplify data storage and retrieval for product engineers.
+xdb is a Go SDK that provides a consistent abstraction layer over multiple databases/storage engines. xdb is designed, for application developers, to simplify data modeling, ingestion, and querying.
 
-xdb's job is to provide a consistent interface to store and retrieve domain data in any database - relational, document, key-value, graph, etc. The goal is to abstract away the underlying database tradeoffs, migrations and management so that product engineers can focus on building products, not databases.
+Not all databases are created equal. Each database comes with its own tradeoffs. xdb allows developers to build, scale, and maintain applications without worrying about the underlying database infrastructure and operations. By providing a consistent data and APIs, xdb can be used to "layer" different databases to combine their capabilities and work around their limitations.
 
-xdb is built on 3 simple abstractions - Key, Attribute & Value. These abstractions can represent most domain models. Here are some examples of how these abstractions can be used to represent different entities:
+# Inspiration
 
-| Key      | Attribute    | Value                                                           |
-| -------- | ------------ | --------------------------------------------------------------- |
-| User:1   | name         | Ravi                                                            |
-| User:1   | email        | ravi@example.com                                                |
-|          |              |                                                                 |
-| Post:1   | title        | This is a post                                                  |
-| Post:1   | content      | This is the content of the post                                 |
-| Post:1   | author       | User:1                                                          |
-|          |              |                                                                 |
-| Photo:1  | caption      | Beautiful sunset over the beach 🌅🏖️                            |
-| Photo:1  | location     | Los Angeles, CA                                                 |
-| Photo:1  | photographer | User:3                                                          |
-|          |              |                                                                 |
-| Review:1 | rating       | 4                                                               |
-| Review:1 | comment      | The service was great, but the food was a bit too spicy for me. |
-| Review:1 | reviewer     | User:5                                                          |
-| Review:1 | restaurant   | Restaurant:1                                                    |
+The idea of xdb data model originated while implementing an ingestion worker for Dgraph. Dgraph provides a N-Quad mutation API to insert or update data. The simplicity of the N-Quad format allowed implementation of a generic worker that could ingest any N-Quad. Adding new domain models was as simple as adding a domain-to-nquad mapping. There were no SQL migrations, no query changes, etc.
 
-and so on...
+How can we borrow this simplicity and apply it all data ingestion and querying usecases?
 
-A Key-Attribute-Value (KAV) model is a simple way to represent both attributes and relations. This is similar to [N-quads](https://www.w3.org/TR/n-quads/). The key difference is that xdb uses `Key` instead of `Subject` and `Attribute` instead of `Predicate`.
+Why worry about the underlying database management, build & maintain SQL queries, etc.?
 
-Borrowing the N-quads structure, allows the possibility of building a graph server on top of xdb. This is something that we will explore in coming posts.
+What if we build an abstraction that allows developers to:
 
-## Experience
+- focus on just modeling their domain, ingesting data, and querying it?
+- swap out the underlying database without any changes to queries?
+- switch between row-oriented and column-oriented storage engines?
+- combine capabilities of different databases to work around their individual limitations?
+- use multiple types of databases - relational, graph, search, time-series, etc. in a single application?
 
-The whole experience of using xdb is as simple as:
+# N-Quads
 
-```go
-ctx := context.Background()
+The N-Quad is a very simple, yet powerful, way to represent attributes and relationships of most domain models. Dgraph extended the N-Quad format to support additional metadata for relationships.
 
-// Define a schema
-schema := xdb.NewSchema("./schema.yaml")
+Here's a reduced example of a social network domain model:
 
-// Create a store
-store := xdb.NewStore(schema, memory.NewStore())
-
-// Populate data
-key := xdb.NewKey("User", "1")
-attr := xdb.NewAttr(key, "name", xdb.String("Ravi"))
-
-// Store attribute
-_ = store.Put(ctx, attr)
-
-// Get attribute
-ref := xdb.NewAttr(key, "name")
-attr, _ = store.Get(ctx, ref)
+```
+<Post:9bsv0s5ocl6002kdg0fg> <title> "Hello World" .
+<Post:9bsv0s5ocl6002kdg0fg> <body> "...content..." .
+<Post:9bsv0s5ocl6002kdg0fg> <author> <User:1> .
+<Post:9bsv0s5ocl6002kdg0fg> <tags> <Tag:golang> .
+<Post:9bsv0s5ocl6002kdg0fg> <tags> <Tag:xdb> .
+<User:1> <follows> <User:2> (since="2009-11-10T23:00:00Z") .
+<User:2> <follows> <User:5> (since="2010-12-10T23:00:00Z") .
+<User:3> <follows> <Tag:golang> .
 ```
 
-With xdb, the product/application/service/API only cares about the shape and values of the domain data. The underlying database can be changed, migrated, scaled, etc. without changing the application code.
+# Data Model
+
+XDB has a simple data model inspired by N-Quads.
+
+## Key
+
+`Key` is the primary key of a record. A `Key` is a combination of `Kind` and `ID`.
+
+## Attribute
+
+`Attribute` is a tuple of `key`, `name` and a `value`. It's structurally similar to N-Quads.
+
+## Edge
+
+`Edge` is an attribute whose value is a `Key` of target record. Edges can have additional metadata about the relation.
+
+## Value
+
+XDB supports all Go primitive types as values. Custom types can be used by implementing the `encoding.BinaryMarshaler` or `json.Marshaler` interfaces.
+
+# Schema
+
+XDB has a strict, yet easy to use, schema. A good mental model for the schema is to think of it as a intended shape of application domain, similar to defining a Terraform resource.
+
+The schema acts as a intermediary between the application domain model and the underlying database(s).
+
+An example of a schema for Twitter:
+
+```yaml
+schema:
+  - kind: Tweet
+    attributes:
+      - name: text
+        type: string
+      - name: created_at
+        type: time
+    edges:
+      - name: author
+        type: User
+      - name: mentions
+        type: User
+        array: true
+      - name: contains
+        type: Hashtag
+        array: true
+  - kind: User
+    attributes:
+      - name: name
+        type: string
+    edges:
+      - name: follows
+        type: User
+        array: true
+        metadata:
+          - name: since
+            type: time
+```
+
+# Developer Experience
+
+Using XDB is as simple as defining a schema, initializing a store, and writing data.
+
+For this example, we will use BadgerDB as the underlying storage engine.
+
+```go
+import (
+  "context"
+  "time"
+
+  "github.com/xdb-dev/xdb"
+  "github.com/xdb-dev/xdb/kv/badger"
+)
+
+func main() {
+  schema, _ := schema.Load("schema.yaml")
+
+  store, _ := badger.NewStore(
+    badger.Dir("/tmp/xdb"),
+    badger.Schema(schema),
+  )
+
+  // Create a new post
+	post := xdb.NewKey("Post", "9bsv0s45jdj002vjlkt0")
+	author := xdb.NewKey("User", "9bsv0s3p32i002qvnf50")
+	tags := []*xdb.Key{
+		xdb.NewKey("Tag", "xdb"),
+		xdb.NewKey("Tag", "database"),
+	}
+
+	// Create post's attributes and edges
+	attrs := []*xdb.Tuple{
+		xdb.NewAttr(post, "title", xdb.String("Introduction to xdb")),
+		xdb.NewAttr(post, "body", xdb.String("...")),
+		xdb.NewAttr(post, "published_at", xdb.Time(time.Now())),
+		xdb.NewEdge(post, "author", author),
+		xdb.NewEdge(post, "tags", tags[0]),
+		xdb.NewEdge(post, "tags", tags[1]),
+	}
+
+	// Save attributes
+	if err := store.PutTuples(ctx, attrs...); err != nil {
+		panic(err)
+	}
+}
+```

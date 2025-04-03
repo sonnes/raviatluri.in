@@ -1,95 +1,69 @@
 ---
 author: 'Ravi Atluri'
-date: '2023-05-08'
-description: 'Design of XDB Go API'
+date: '2023-09-20'
 title: 'Designing XDB API'
+description: 'Walkthrough of the XDB data models and APIs'
 tags: ['xdb']
 ---
 
-In this article, we will build on developer experience described in [Building XDB](/articles/building-xdb) and define the XDB Go API.
+Let's start by implementing the data model, persistence and retrieval APIs.
 
-XDB has three primary abstractions: Key, Attribute and Value.
+`Tuple` is the core building block of XDB. It is a combination of key, name and value. Both attributes and edges are represented as tuples.
 
-## Key
+### Attribute
 
-Key is a unique reference to an node. Key is made up of two parts: Kind and ID. Kind is a string that identifies the type of node. ID is a string that uniquely identifies an node within a kind.
-
-A `Key` is an immutable struct instantiated with `kind` and `id` or by parsing an encoded key.
+Attributes are created with `xdb.NewAttr` function.
 
 ```go
-key := xdb.NewKey("User", "123")
-// or
-key := xdb.MustParseKey("User:123")
+text := xdb.NewAttr(
+  xdb.NewKey("Post", "9bsv0s5ocl6002kdg0fg"),
+  "title",
+  xdb.String("Hello World"),
+)
 ```
 
-## Attribute
+<Image
+  src="/images/designing-xdb-api/attribute-structure.png"
+  alt="Attribute Structure"
+/>
 
-Attribute is a named property of an node. Attribute is made up of three parts: Key, Name and Value. Key is a unique identifier for an node. Name is a string that identifies the attribute. Value is byte encoded value of the attribute.
+XDB implements a value type system allowing developers to store and retrieve Go primitive types, lists and custom types. Custom types must implement one of `encoding.BinaryMarshaler` or `json.Marshaler` interfaces.
 
-`Attribute` is shortened to `Attr` in the type definitions, function names and method names. This reduces the line length and makes the code more readable.
+### Edge
+
+Edges are tuples whose value is a Key. Edges are created with `xdb.NewEdge` function.
 
 ```go
-key := xdb.NewKey("User", "123")
-
-name := xdb.NewAttr(key, "name", xdb.String("Ravi")
-
-expireAt := xdb.ExpireAt(time.Now().Add(24 * time.Hour))
-muteAlerts := xdb.NewAttr(key, "mute_alerts", xdb.Bool(true), expireAt)
+liked := xdb.NewEdge(
+  xdb.NewKey("Post", "9bsv0s5ocl6002kdg0fg"),
+  "liked_by",
+  xdb.NewKey("User", "9bsv0s3p32i002qvnf50"),
+)
 ```
 
-## Value
+<Image
+  src="/images/designing-xdb-api/edge-structure.png"
+  alt="Edge Structure"
+/>
 
-A value is a byte encoded value of an attribute. API provides functions to encode and decode values for common types.
+Edges have a special nature. 1:1 edges behave like attributes. They can be retrieved by specifying the key and name.
 
-```go
-nameAttr := xdb.NewAttr(key, "name", String("Ravi"))
+1:N edges can be retrieved by in two ways. First, by specifying the key and name. This will return all the edges with the name. Second, by specifying the key, name and the target key. This is useful to check if an edge exists.
 
-// Value() returns the byte encoded value
-nameAttr.Value() // []byte("Ravi")
+### Tuple Store
 
-// String() decodes the value as string
-nameAttr.String() // "Ravi"
-
-```
-
-Similarly, there are functions to encode and decode values for other types.
+The first capability of XDB is to store and retrieve tuples. The `xdb.TupleStore` interface defines the persistence API.
 
 ```go
-attr := xdb.NewAttr(key, "age", xdb.Int(20))
-attr.Int() // 20
-
-attr := xdb.NewAttr(key, "height", xdb.Float(5.7))
-attr.Float() // 5.7
-
-attr := xdb.NewAttr(key, "active", xdb.Bool(true))
-attr.Bool() // true
-
-attr := xdb.NewAttr(key, "last_seen", xdb.Time(time.Now()))
-attr.Time() // time.Time("2023-05-05T00:00:00Z")
-```
-
-## Store APIs
-
-The APIs are broken down into two interfaces: `Store` and `Query`.
-
-All storage implementations must implement the `Store` interface. `Store` interface provides methods to get, put and delete attributes individually or in bulk.
-
-```go
-type Store interface {
-  Get(ctx context.Context, attrs ...*Attr) ([]*Attr, error)
-  Put(ctx context.Context, attrs ...*Attr) error
-  Delete(ctx context.Context, attrs ...*Attr) error
+type TupleStore interface {
+	PutTuples(ctx context.Context, tuples ...*Tuple) error
+	GetTuples(ctx context.Context, refs ...*Ref) ([]*Tuple, error)
+	DeleteTuples(ctx context.Context, refs ...*Ref) error
 }
 ```
 
-For `Get` and `Delete` methods, a partial `Attr` can be passed. The `Attr` must have the `Key` and `Name` fields set. The `Value` field is ignored.
+`Ref` is a reference to any tuple. It is used as a way to refer to a tuple in APIs.
 
-```go
-key := xdb.NewKey("User", "123")
+All storage engines must, at least, implement `TupleStore` interface. XDB provides a `MemoryStore` as a reference implementation and for testing.
 
-nameAttr := xdb.NewAttr(key, "name")
-
-attrs, err := store.Get(ctx, nameAttr)
-```
-
-We will defer the definition of `Query` interface to later.
+The XDB codebase is available at https://github.com/xdb-dev/xdb

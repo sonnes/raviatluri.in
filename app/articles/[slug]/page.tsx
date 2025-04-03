@@ -68,7 +68,7 @@ export default async function Article({ params }: { params: Promise<{ slug: stri
                   <>
                     <span className="mx-2">•</span>
                     {post.tags.map((tag, index) => (
-                      <span key={tag}>
+                      <span key={tag} className="pl-1">
                         <a
                           href={`/tags/${tag}`}
                           className="hover:text-zinc-500 dark:hover:text-zinc-400"

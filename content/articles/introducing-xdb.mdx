@@ -1,0 +1,120 @@
+---
+author: Ravi Atluri
+date: 2025-04-03
+title: Introducing XDB
+description: XDB is a new kind of database library based on tuples. Rather than writing database specific schemas, queries, and migrations, XDB allows developers to model their domain once and use it with one or more databases.
+tags:
+  - xdb
+  - database
+---
+
+XDB is a new kind of database library based on tuples.
+
+Rather than writing database specific schemas, queries, and migrations, XDB allows developers to model their domain once and use it with one or more databases.
+
+XDB separates the application domain model from the underlying database(s) by using a simple, yet powerful, data model based on tuples. It allows application developers to focus on modeling, ingesting, and querying data without worrying about the underlying database infrastructure and operations.
+
+## Why?
+
+Not all databases are created equal. Each database comes with its own features and tradeoffs. Most applications, at scale, have multiple types of databases - PostgreSQL/MySQL as the main database, Redis for caching, Elasticsearch for search, Clickhouse for analytics, BigTable for versioning etc. Every database solves a specific problem and has different tradeoffs.
+
+An application domain model is often a combination data that resides in different databases. Typically, each database has its own "layer" abstracting away the migrations and queries. Alternatively, new microservices are created spunup to manage specific usecases like search, analytics, caching, etc.
+
+At end of the day, developers have to stitch together domain data from multiple databases or microservices to serve user-facing APIs. Looking at an end-to-end flow, there are several layers data fetching, mutations, transformations, etc. Every time a feature adds new fields, relationships, etc. the entire stack goes through a churn.
+
+XDB is an attempt to simplify domain data operations by creating a single, consistent, data model that can be used with multiple databases. It also allows composition and layering of databases to combine their capabilities and work around their limitations.
+
+## Inspiration
+
+XDB draws inspiration from two key concepts - data services and N-Quads.
+
+Data services are intermediary services that sit between the API and databases. Data services provide simple APIs for your domain data, while automating and abstracting away the underlying database management.
+
+<Image
+  src="/images/introducing-xdb/data-services.png"
+  alt="Data Services"
+/>
+
+[N-Quad](https://www.w3.org/TR/n-quads/) is a well-known format often used to represent attributes and relationships in graphs. Dgraph extended extended the N-Quad format to support additional metadata for relationships.
+
+```
+<Post:9bsv0s5ocl6002kdg0fg> <title> "Hello World" .
+<Post:9bsv0s5ocl6002kdg0fg> <description> "..." .
+<Post:9bsv0s5ocl6002kdg0fg> <author> <User:1> .
+<Post:9bsv0s5ocl6002kdg0fg> <created_at> "2025-04-01T00:00:00Z"
+<Post:9bsv0s5ocl6002kdg0fg> <tags> <Tag:golang> .
+<Post:9bsv0s5ocl6002kdg0fg> <tags> <Tag:xdb> .
+```
+
+XDB was inspired by Dgraph's [Mutation API](https://github.com/hypermodeinc/dgo/blob/8fd6df819e01c401e89f57601fba40e5631a27de/protos/api.proto#L68) that uses N-Quads to insert or update data. What if this idea was extended to build an abstraction that could be used with any database?
+
+## Data Model
+
+**Tuple** is the core building block of XDB. A tuple is a combination of a key, name, value, and optional metadata.
+
+<Image
+  src="/images/introducing-xdb/tuple.png"
+  alt="XDB's Tuple"
+/>
+
+Tuple is an simple data structure that can express any kind of application domain. It is flexible to encode & decode data to & from JSON, Protobuf, or Go structs. On the other hand, it can be easily mapped to a table PostgreSQL, a document in Elasticsearch, or key-value pairs in Redis.
+
+This makes the **Tuple** a good fit as an intermediary data model for building data services.
+
+Optionally, tuples with the same key, can be grouped into a **Record**. Records are similar to objects, structs or rows in a database.
+
+## Developer Experience
+
+XDB is designed for building and managing data services. It can also be used to replace ORMs and traditional repository/database layers in applications.
+
+The core API of XDB is built around creating and managing tuples.
+
+```go
+// Create a new tuple
+tuple := xdb.NewTuple(
+	xdb.NewKey("Post", "9bsv0s5ocl6002kdg0fg", "name"),
+	"Hello World",
+)
+
+// Access tuple fields
+tuple.Key() // "Post:9bsv0s5ocl6002kdg0fg"
+tuple.Kind() // "Post"
+tuple.ID() // "9bsv0s5ocl6002kdg0fg"
+tuple.Name() // "title"
+tuple.String() // "Hello World"
+```
+
+XDB uses small and composable "capabilities" to interact with databases. Capabilities are Go interfaces that define a set of operations. Drivers implement one or more capabilities depending on the database features.
+
+Some examples of capabilities are:
+
+```go
+type TupleReader interface {}
+
+type TupleWriter interface {}
+
+type TupleIterator interface {}
+
+type TupleIndexer interface {}
+
+type TupleSearcher interface {}
+```
+
+Using capabilities, XDB provides a few high-level "stores" that implement most common database operations.
+
+```go
+type TupleStore struct {
+  TupleReader
+  TupleWriter
+}
+
+type CachedStore struct {
+  primary TupleStore
+  secondary TupleStore
+}
+
+type SearchStore struct {
+  TupleIndexer
+  TupleSearcher
+}
+```
