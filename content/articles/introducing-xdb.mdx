@@ -16,13 +16,21 @@ XDB separates the application domain model from the underlying database(s) by us
 
 ## Why?
 
-Not all databases are created equal. Each database comes with its own features and tradeoffs. Most applications, at scale, have multiple types of databases - PostgreSQL/MySQL as the main database, Redis for caching, Elasticsearch for search, Clickhouse for analytics, BigTable for versioning etc. Every database solves a specific problem and has different tradeoffs.
+Not all databases are created equal. Each database comes with its own features and tradeoffs. Most applications, at scale, have multiple types of databases:
+
+- PostgreSQL/MySQL as the main database
+- Redis for caching
+- Elasticsearch for search
+- Clickhouse for analytics
+- BigTable for versioning
+
+Every database solves a specific problem and has different tradeoffs.
 
 An application domain model is often a combination data that resides in different databases. Typically, each database has its own "layer" abstracting away the migrations and queries. Alternatively, new microservices are created spunup to manage specific usecases like search, analytics, caching, etc.
 
 At end of the day, developers have to stitch together domain data from multiple databases or microservices to serve user-facing APIs. Looking at an end-to-end flow, there are several layers data fetching, mutations, transformations, etc. Every time a feature adds new fields, relationships, etc. the entire stack goes through a churn.
 
-XDB is an attempt to simplify domain data operations by creating a single, consistent, data model that can be used with multiple databases. It also allows composition and layering of databases to combine their capabilities and work around their limitations.
+XDB is an attempt to separate application domain model from database implementation and operations. What if, instead of maintaining multiple database-specific implementations, developerscan model their domain once and seamlessly work with multiple databases.
 
 ## Inspiration
 
@@ -50,71 +58,78 @@ XDB was inspired by Dgraph's [Mutation API](https://github.com/hypermodeinc/dgo/
 
 ## Data Model
 
-**Tuple** is the core building block of XDB. A tuple is a combination of a key, name, value, and optional metadata.
+XDB is built around three core concepts - **Tuple**, **Edge**, and **Record**.
+
+**Tuple** is a combination of a key, name, value, and optional metadata.
 
 <Image
   src="/images/introducing-xdb/tuple.png"
-  alt="XDB's Tuple"
+  alt="Tuple"
 />
 
-Tuple is an simple data structure that can express any kind of application domain. It is flexible to encode & decode data to & from JSON, Protobuf, or Go structs. On the other hand, it can be easily mapped to a table PostgreSQL, a document in Elasticsearch, or key-value pairs in Redis.
+This simple yet powerful structure can represent any domain model while being easily mappable to various database formats.
 
-This makes the **Tuple** a good fit as an intermediary data model for building data services.
+**Edge** is a special kind of tuple whose value is also a key. Edges are unidirectional and are used to represent relationships between records.
 
-Optionally, tuples with the same key, can be grouped into a **Record**. Records are similar to objects, structs or rows in a database.
+**Record** is a collection of tuples and edges that share the same key. Records are similar to objects, structs or rows in a database.
 
 ## Developer Experience
 
 XDB is designed for building and managing data services. It can also be used to replace ORMs and traditional repository/database layers in applications.
 
-The core API of XDB is built around creating and managing tuples.
+Here's how you can use XDB:
 
 ```go
-// Create a new tuple
-tuple := xdb.NewTuple(
-	xdb.NewKey("Post", "9bsv0s5ocl6002kdg0fg", "name"),
-	"Hello World",
-)
+// Start by creating tuples and edges.
+key := xdb.NewKey("Post", "9bsv0s5ocl6002kdg0fg")
 
-// Access tuple fields
-tuple.Key() // "Post:9bsv0s5ocl6002kdg0fg"
-tuple.Kind() // "Post"
-tuple.ID() // "9bsv0s5ocl6002kdg0fg"
-tuple.Name() // "title"
-tuple.String() // "Hello World"
-```
-
-XDB uses small and composable "capabilities" to interact with databases. Capabilities are Go interfaces that define a set of operations. Drivers implement one or more capabilities depending on the database features.
-
-Some examples of capabilities are:
-
-```go
-type TupleReader interface {}
-
-type TupleWriter interface {}
-
-type TupleIterator interface {}
-
-type TupleIndexer interface {}
-
-type TupleSearcher interface {}
-```
-
-Using capabilities, XDB provides a few high-level "stores" that implement most common database operations.
-
-```go
-type TupleStore struct {
-  TupleReader
-  TupleWriter
+tuples := []*xdb.Tuple{
+	xdb.NewTuple(key, "title", "Hello World"),
+	xdb.NewTuple(key, "description", "..."),
+	xdb.NewTuple(key, "created_at", time.Now()),
 }
 
-type CachedStore struct {
-  primary TupleStore
-  secondary TupleStore
+edges := []*xdb.Edge{
+	xdb.NewEdge(key, "author", xdb.NewKey("User", "1")),
+	xdb.NewEdge(key, "tags", xdb.NewKey("Tag", "golang")),
+	xdb.NewEdge(key, "tags", xdb.NewKey("Tag", "xdb")),
 }
 
-type SearchStore struct {
-  TupleIndexer
-  TupleSearcher
+// Use any of the driver implementations to store
+// the tuples and edges.
+memstore := xdbmemory.New()
+
+_ = memstore.PutTuples(ctx, tuples...)
+_ = memstore.PutEdges(ctx, edges...)
+
+// OR store the tuples and edges in different databases.
+tuplestore := xdbpostgres.New()
+edgestore := xdbredis.New()
+
+_ = edgestore.PutEdges(ctx, edges...)
+_ = tuplestore.PutTuples(ctx, tuples...)
+
+// Fetch the tuples and edges using Get APIs.
+keys := []*xdb.Key{
+	xdb.NewKey("Post", "9bsv0s5ocl6002kdg0fg"),
 }
+attrNames := []string{"title", "description", "created_at"}
+edgeNames := []string{"author", "tags"}
+
+tuples, _ := tupleStore.GetTuples(ctx, keys, attrNames)
+edges, _ := edgeStore.GetEdges(ctx, keys, edgeNames)
+
+// Alternatively, use higher-level Record APIs
+post := xdb.NewRecord(key).
+	Set("title", "Hello World").
+	Set("description", "...").
+	Set("created_at", time.Now()).
+	AddEdge("author", xdb.NewKey("User", "1")).
+	AddEdge("tags", xdb.NewKey("Tag", "golang")).
+	AddEdge("tags", xdb.NewKey("Tag", "xdb"))
+
+_ = memstore.PutRecord(ctx, post)
+
+// Fetch the full post
+post, _ = memstore.GetRecord(ctx, key)
 ```

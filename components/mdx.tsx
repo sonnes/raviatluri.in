@@ -4,7 +4,8 @@ import { MDXRemote, MDXRemoteProps } from 'next-mdx-remote/rsc';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { highlight } from 'sugar-high';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 type HeadingProps = ComponentPropsWithoutRef<'h1'>;
 type ParagraphProps = ComponentPropsWithoutRef<'p'>;
@@ -15,8 +16,8 @@ type BlockquoteProps = ComponentPropsWithoutRef<'blockquote'>;
 
 const customComponents = {
   h1: (props: HeadingProps) => <h1 className="text-2xl font-semibold mt-12 mb-3" {...props} />,
-  h2: (props: HeadingProps) => <h2 className="text-xl font-semibold mb-3" {...props} />,
-  h3: (props: HeadingProps) => <h3 className="text-lg font-semibold mb-3" {...props} />,
+  h2: (props: HeadingProps) => <h2 className="text-xl font-semibold mt-8 mb-3" {...props} />,
+  h3: (props: HeadingProps) => <h3 className="text-lg font-semibold mt-6 mb-3" {...props} />,
   h4: (props: HeadingProps) => <h4 className="text-base font-semibold mb-3" {...props} />,
   p: (props: ParagraphProps) => <p className="leading-snug my-4" {...props} />,
   ol: (props: ListProps) => <ol className="list-decimal pl-5 space-y-2" {...props} />,
@@ -48,9 +49,24 @@ const customComponents = {
       </a>
     );
   },
-  code: ({ children, ...props }: ComponentPropsWithoutRef<'code'>) => {
-    const codeHTML = highlight(children as string);
-    return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
+  code: ({ children, className, style, ...props }: ComponentPropsWithoutRef<'code'>) => {
+    const language = className?.replace('language-', '');
+    return (
+      <SyntaxHighlighter
+        language={language}
+        style={vscDarkPlus}
+        customStyle={{
+          margin: '1.5rem 0',
+          padding: '1rem',
+          borderRadius: '0.5rem',
+          fontSize: '0.875rem',
+          lineHeight: '1.5',
+        }}
+        {...props}
+      >
+        {String(children).replace(/\n$/, '')}
+      </SyntaxHighlighter>
+    );
   },
   Table: ({ data }: { data: { headers: string[]; rows: string[][] } }) => (
     <table>
