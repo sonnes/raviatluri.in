@@ -51,17 +51,18 @@ const customComponents = {
   },
   code: ({ children, className, style, ...props }: ComponentPropsWithoutRef<'code'>) => {
     const language = className?.replace('language-', '');
+    const customStyle = style || {
+      margin: '1.5rem 0',
+      padding: '1rem',
+      borderRadius: '0.5rem',
+      fontSize: '0.875rem',
+      lineHeight: '1.5',
+    };
     return (
       <SyntaxHighlighter
         language={language}
         style={vscDarkPlus}
-        customStyle={{
-          margin: '1.5rem 0',
-          padding: '1rem',
-          borderRadius: '0.5rem',
-          fontSize: '0.875rem',
-          lineHeight: '1.5',
-        }}
+        customStyle={customStyle}
         {...props}
       >
         {String(children).replace(/\n$/, '')}
