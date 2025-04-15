@@ -98,7 +98,7 @@ export async function createDictation(formData: FormData) {
 
   const dictation = {
     id: crypto.randomUUID(),
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(),
     sections,
   };
 

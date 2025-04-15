@@ -21,7 +21,14 @@ export function AbacusProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const dictations = localStorage.getItem('dictations');
     if (dictations) {
-      setDictations(JSON.parse(dictations));
+      setDictations(
+        JSON.parse(dictations, (key, value) => {
+          if (key === 'createdAt') {
+            return new Date(value);
+          }
+          return value;
+        })
+      );
     }
   }, []);
 

@@ -10,10 +10,9 @@ import { useAbacus } from './context';
 export default function UploadForm() {
   const [isDragging, setIsDragging] = useState(false);
   const { addDictation } = useAbacus();
-  const [uploadStatus, setUploadStatus] = useState<{
-    success?: boolean;
-    error?: string;
-  } | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'loading' | 'success' | 'error'>(
+    'idle'
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -29,31 +28,34 @@ export default function UploadForm() {
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
+    setUploadStatus('loading');
 
     const file = e.dataTransfer.files[0];
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
-      const { error, dictation } = await createDictation(formData);
+      const { success, error, dictation } = await createDictation(formData);
       if (error) {
-        setUploadStatus({ error: error });
-      } else if (dictation) {
-        setUploadStatus({ success: true });
+        setUploadStatus('error');
+      } else if (success && dictation) {
+        setUploadStatus('success');
         addDictation(dictation);
       }
     }
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUploadStatus('loading');
+
     const file = e.target.files?.[0];
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
-      const { error, dictation } = await createDictation(formData);
+      const { success, error, dictation } = await createDictation(formData);
       if (error) {
-        setUploadStatus({ error: error });
-      } else if (dictation) {
-        setUploadStatus({ success: true });
+        setUploadStatus('error');
+      } else if (success && dictation) {
+        setUploadStatus('success');
         addDictation(dictation);
       }
     }
@@ -99,13 +101,13 @@ export default function UploadForm() {
       </div>
       {uploadStatus && (
         <div className="mt-4">
-          {uploadStatus.error ? (
-            <div className="text-sm text-red-600">{uploadStatus.error}</div>
-          ) : (
-            <div>
-              <div className="text-sm text-green-600 mb-4">File uploaded successfully!</div>
-            </div>
-          )}
+          {uploadStatus === 'error' ? (
+            <div className="text-sm text-red-600">Error uploading file</div>
+          ) : uploadStatus === 'loading' ? (
+            <div className="text-sm text-gray-600">Uploading...</div>
+          ) : uploadStatus === 'success' ? (
+            <div className="text-sm text-green-600">File uploaded successfully!</div>
+          ) : null}
         </div>
       )}
     </div>

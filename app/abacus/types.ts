@@ -1,6 +1,6 @@
 export interface Dictation {
   id: string;
-  createdAt: string;
+  createdAt: Date;
   sections: DictationSection[];
 }
 
