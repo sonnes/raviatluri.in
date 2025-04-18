@@ -2,6 +2,8 @@
 
 import { useRef, useState } from 'react';
 
+import imageCompression from 'browser-image-compression';
+
 import { ImageIcon } from '@/components/icons';
 
 import { createDictation } from './actions';
@@ -10,10 +12,43 @@ import { useAbacus } from './context';
 export default function UploadForm() {
   const [isDragging, setIsDragging] = useState(false);
   const { addDictation } = useAbacus();
-  const [uploadStatus, setUploadStatus] = useState<'idle' | 'loading' | 'success' | 'error'>(
-    'idle'
-  );
+  const [uploadStatus, setUploadStatus] = useState<
+    'idle' | 'compressing' | 'uploading' | 'success' | 'error'
+  >('idle');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const compressImage = async (file: File): Promise<File> => {
+    const options = {
+      maxSizeMB: 10,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+    try {
+      return await imageCompression(file, options);
+    } catch (error) {
+      console.error('Error compressing image:', error);
+      throw error;
+    }
+  };
+
+  const handleFileUpload = async (file: File) => {
+    setUploadStatus('compressing');
+    try {
+      const compressedFile = await compressImage(file);
+      setUploadStatus('uploading');
+      const formData = new FormData();
+      formData.append('file', compressedFile);
+      const { success, error, dictation } = await createDictation(formData);
+      if (error) {
+        setUploadStatus('error');
+      } else if (success && dictation) {
+        setUploadStatus('success');
+        addDictation(dictation);
+      }
+    } catch (error) {
+      setUploadStatus('error');
+    }
+  };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -28,36 +63,16 @@ export default function UploadForm() {
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    setUploadStatus('loading');
-
     const file = e.dataTransfer.files[0];
     if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-      const { success, error, dictation } = await createDictation(formData);
-      if (error) {
-        setUploadStatus('error');
-      } else if (success && dictation) {
-        setUploadStatus('success');
-        addDictation(dictation);
-      }
+      await handleFileUpload(file);
     }
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUploadStatus('loading');
-
     const file = e.target.files?.[0];
     if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-      const { success, error, dictation } = await createDictation(formData);
-      if (error) {
-        setUploadStatus('error');
-      } else if (success && dictation) {
-        setUploadStatus('success');
-        addDictation(dictation);
-      }
+      await handleFileUpload(file);
     }
   };
 
@@ -103,7 +118,9 @@ export default function UploadForm() {
         <div className="mt-4">
           {uploadStatus === 'error' ? (
             <div className="text-sm text-red-600">Error uploading file</div>
-          ) : uploadStatus === 'loading' ? (
+          ) : uploadStatus === 'compressing' ? (
+            <div className="text-sm text-gray-600">Compressing...</div>
+          ) : uploadStatus === 'uploading' ? (
             <div className="text-sm text-gray-600">Uploading...</div>
           ) : uploadStatus === 'success' ? (
             <div className="text-sm text-green-600">File uploaded successfully!</div>
