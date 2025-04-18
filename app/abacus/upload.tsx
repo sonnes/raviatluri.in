@@ -9,7 +9,7 @@ import { ImageIcon } from '@/components/icons';
 import { createDictation } from './actions';
 import { useAbacus } from './context';
 
-export default function UploadForm() {
+export default function UploadForm({ password }: { password: string }) {
   const [isDragging, setIsDragging] = useState(false);
   const { addDictation } = useAbacus();
   const [uploadStatus, setUploadStatus] = useState<
@@ -34,10 +34,14 @@ export default function UploadForm() {
   const handleFileUpload = async (file: File) => {
     setUploadStatus('compressing');
     try {
-      const compressedFile = await compressImage(file);
       setUploadStatus('uploading');
+
+      const compressedFile = await compressImage(file);
+
       const formData = new FormData();
       formData.append('file', compressedFile);
+      formData.append('password', password);
+
       const { success, error, dictation } = await createDictation(formData);
       if (error) {
         setUploadStatus('error');
@@ -46,6 +50,7 @@ export default function UploadForm() {
         addDictation(dictation);
       }
     } catch (error) {
+      console.error('Error uploading file:', error);
       setUploadStatus('error');
     }
   };

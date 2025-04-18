@@ -135,9 +135,13 @@ async function generateAudio(numbers: number[], breakTime: number): Promise<stri
 
 export async function createDictation(formData: FormData) {
   const file = formData.get('file') as File;
-
+  const password = formData.get('password') as string;
   if (!file) {
     return { success: false, error: 'No file provided' };
+  }
+
+  if (password !== process.env.ABACUS_PASSWORD) {
+    return { success: false, error: 'Invalid password' };
   }
 
   const sections = await parseWorksheet(file);

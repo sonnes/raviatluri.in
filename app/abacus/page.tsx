@@ -37,7 +37,7 @@ export default async function Abacus({
       </header>
       <div className="space-y-20">
         <AbacusProvider>
-          <UploadForm />
+          <UploadForm password={password} />
           <DictationList />
         </AbacusProvider>
       </div>
