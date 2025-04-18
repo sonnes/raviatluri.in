@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { Dialog } from '@headlessui/react';
+import { EyeIcon, EyeSlashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 import { useAbacus } from './context';
 import { type Dictation, type DictationSection } from './types';
@@ -165,6 +166,8 @@ export function DictationWorksheet({ dictation }: DictationWorksheetProps) {
 
 export function DictationList() {
   const { dictations } = useAbacus();
+  const [selectedDictation, setSelectedDictation] = useState<Dictation | null>(null);
+
   return (
     <div className="space-y-8">
       {dictations
@@ -173,14 +176,59 @@ export function DictationList() {
           <div key={dictation.id}>
             {index > 0 && <div className="h-px bg-gray-200 my-8" />}
             <div className="mb-6">
-              <h1 className="text-2xl font-bold">Dictation {index + 1}</h1>
-              <p className="text-gray-500 text-sm">
-                Created on {dictation.createdAt.toLocaleDateString()}
-              </p>
+              <button
+                onClick={() => setSelectedDictation(dictation)}
+                className="text-2xl font-bold hover:text-blue-600 transition-colors cursor-pointer"
+              >
+                {getTitle(dictation.id)}
+              </button>
+              <p className="text-gray-500 text-sm">Created on {formatDate(dictation.createdAt)}</p>
             </div>
-            <DictationWorksheet dictation={dictation} />
           </div>
         ))}
+
+      <Dialog
+        open={selectedDictation !== null}
+        onClose={() => setSelectedDictation(null)}
+        className="relative z-50"
+      >
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="mx-auto max-w-4xl w-full rounded-lg bg-white p-6">
+            <div className="flex justify-between items-center mb-4">
+              <Dialog.Title className="text-xl font-bold">
+                {getTitle(selectedDictation?.id ?? '')}
+              </Dialog.Title>
+              <button
+                onClick={() => setSelectedDictation(null)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <XMarkIcon className="h-6 w-6" />
+              </button>
+            </div>
+
+            {selectedDictation && <DictationWorksheet dictation={selectedDictation} />}
+          </Dialog.Panel>
+        </div>
+      </Dialog>
     </div>
   );
+}
+
+function getTitle(id: string) {
+  return id
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }

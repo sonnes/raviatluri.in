@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { GoogleGenAI } from '@google/genai';
+import { adjectives, animals, colors, uniqueNamesGenerator } from 'unique-names-generator';
 
 import type { DictationSection } from './types';
 
@@ -97,7 +98,11 @@ export async function createDictation(formData: FormData) {
   }
 
   const dictation = {
-    id: crypto.randomUUID(),
+    id: uniqueNamesGenerator({
+      dictionaries: [adjectives, colors, animals],
+      length: 3,
+      separator: '-',
+    }),
     createdAt: new Date(),
     sections,
   };
