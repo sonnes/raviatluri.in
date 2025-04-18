@@ -115,15 +115,15 @@ export default function UploadForm() {
         </div>
       </div>
       {uploadStatus && (
-        <div className="mt-4">
+        <div className="mt-4 text-lg font-bold">
           {uploadStatus === 'error' ? (
-            <div className="text-sm text-red-600">Error uploading file</div>
+            <div className="text-red-600">Error uploading file</div>
           ) : uploadStatus === 'compressing' ? (
-            <div className="text-sm text-gray-600">Compressing...</div>
+            <div className="text-gray-600">Compressing...</div>
           ) : uploadStatus === 'uploading' ? (
-            <div className="text-sm text-gray-600">Uploading...</div>
+            <div className="text-gray-600">Generating...</div>
           ) : uploadStatus === 'success' ? (
-            <div className="text-sm text-green-600">File uploaded successfully!</div>
+            <div className="text-green-600">Worksheet ready!</div>
           ) : null}
         </div>
       )}

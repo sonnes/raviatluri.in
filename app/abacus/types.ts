@@ -12,4 +12,5 @@ export interface DictationSection {
 export interface Problem {
   numbers: number[];
   answer: number;
+  audio?: string;
 }

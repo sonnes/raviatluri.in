@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Dialog } from '@headlessui/react';
 import { EyeIcon, EyeSlashIcon, XMarkIcon } from '@heroicons/react/24/outline';
@@ -128,12 +128,86 @@ function DictationSection({
   );
 }
 
+function Player({ dictation }: { dictation: Dictation }) {
+  const allProblems = dictation.sections.flatMap(section => section.problems);
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState<number | undefined>(undefined);
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const playQuestion = async (index: number) => {
+    if (index >= allProblems.length) {
+      setIsPlaying(false);
+      setCurrentQuestion(undefined);
+      audioRef.current?.pause();
+      audioRef.current = null;
+      return;
+    }
+
+    const problem = allProblems[index];
+    const audio = new Audio(`data:audio/mp3;base64,${problem.audio}`);
+    audioRef.current = audio;
+
+    setCurrentQuestion(index);
+    setIsPlaying(true);
+
+    try {
+      await audio.play();
+      await new Promise(resolve => {
+        audio.onended = () => {
+          setTimeout(resolve, 2000);
+        };
+      });
+      playQuestion(index + 1);
+    } catch (error) {
+      console.error('Error playing audio:', error);
+      setIsPlaying(false);
+    }
+  };
+
+  const togglePlay = () => {
+    if (currentQuestion === undefined) {
+      playQuestion(0);
+      return;
+    }
+
+    if (isPlaying) {
+      audioRef.current?.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current?.play();
+      setIsPlaying(true);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
+
+  return (
+    <div className="flex items-center gap-2">
+      <button
+        onClick={togglePlay}
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+      >
+        {isPlaying ? 'Pause' : currentQuestion === undefined ? 'Play' : 'Resume'}
+      </button>
+    </div>
+  );
+}
+
 export function DictationWorksheet({ dictation }: DictationWorksheetProps) {
   const [showAnswers, setShowAnswers] = useState(false);
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-between mb-4">
+        <Player dictation={dictation} />
         <button
           onClick={() => setShowAnswers(!showAnswers)}
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"

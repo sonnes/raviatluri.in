@@ -33,7 +33,11 @@ export function AbacusProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('dictations', JSON.stringify(dictations));
+    try {
+      localStorage.setItem('dictations', JSON.stringify(dictations));
+    } catch (error) {
+      console.error('Error saving dictations:', error);
+    }
   }, [dictations]);
 
   return (

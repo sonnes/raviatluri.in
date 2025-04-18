@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { GoogleGenAI } from '@google/genai';
+import { ElevenLabsClient } from 'elevenlabs';
 import { adjectives, animals, colors, uniqueNamesGenerator } from 'unique-names-generator';
 
 import type { DictationSection } from './types';
@@ -79,7 +80,57 @@ export async function parseWorksheet(file: File) {
 
   const parsed = JSON.parse(generatedContent.text);
 
-  return parsed.sections as DictationSection[];
+  const sections = parsed.sections as DictationSection[];
+
+  const promises = [];
+  for (const section of sections) {
+    for (const problem of section.problems) {
+      promises.push(generateAudio(problem.numbers, 1));
+    }
+  }
+
+  const audios = await Promise.all(promises);
+  for (let i = 0; i < sections.length; i++) {
+    for (let j = 0; j < sections[i].problems.length; j++) {
+      sections[i].problems[j].audio = audios[i * sections[i].problems.length + j];
+    }
+  }
+
+  return sections;
+}
+
+async function generateAudio(numbers: number[], breakTime: number): Promise<string> {
+  const client = new ElevenLabsClient({
+    apiKey: process.env.ELEVEN_LABS_API_KEY,
+  });
+
+  const text = numbers.map(n => n.toString()).join(` <break time="${breakTime}s" />`);
+
+  const voiceId = 'zeTFANH8Ybln8sjiUtmJ'; //3vXjdKMDgxJoOLbElGxC';
+
+  try {
+    const response = await client.textToSpeech.convert(voiceId, {
+      text: `${text}. <break time="1s" /> Answer is.`,
+      model_id: 'eleven_turbo_v2',
+      voice_settings: {
+        speed: 0.7,
+        stability: 0.4,
+        similarity_boost: 0.5,
+        style: 0,
+      },
+    });
+
+    // Convert stream to buffer
+    const chunks: Buffer[] = [];
+    for await (const chunk of response) {
+      chunks.push(Buffer.from(chunk));
+    }
+    const buffer = Buffer.concat(chunks);
+    return buffer.toString('base64');
+  } catch (error) {
+    console.error('Error generating audio:', error);
+    throw error;
+  }
 }
 
 export async function createDictation(formData: FormData) {
