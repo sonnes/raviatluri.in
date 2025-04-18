@@ -8,10 +8,18 @@ export default async function sitemap() {
     lastModified: new Date().toISOString(),
   }));
 
+  const tags = articles.flatMap(article => article.tags || []);
+  const uniqueTags = [...new Set(tags)];
+
+  const tagRoutes = uniqueTags.map(tag => ({
+    url: `https://raviatluri.in/tags/${tag}`,
+    lastModified: new Date().toISOString(),
+  }));
+
   const routes = ['', '/articles', '/about', '/projects', '/tools'].map(route => ({
     url: `https://raviatluri.in${route}`,
     lastModified: new Date().toISOString(),
   }));
 
-  return [...routes, ...notes];
+  return [...routes, ...notes, ...tagRoutes];
 }

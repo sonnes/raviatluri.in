@@ -61,25 +61,23 @@ export default async function Article({ params }: { params: Promise<{ slug: stri
         <div className="mx-auto max-w-2xl">
           <article>
             <header className="flex flex-col">
-              <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-800">{post.title}</h1>
+              <time dateTime={post.date} className="text-base font-semibold text-zinc-400">
+                {formatDate(post.date)}
+              </time>
+              <h1 className="text-4xl font-bold tracking-tight text-zinc-800">{post.title}</h1>
               <div className="flex items-center text-base text-zinc-400 my-4">
-                <time dateTime={post.date}>{post.date}</time>
-                {post.tags && (
-                  <>
-                    <span className="mx-2">•</span>
-                    {post.tags.map((tag, index) => (
-                      <span key={tag} className="pl-1">
-                        <a
-                          href={`/tags/${tag}`}
-                          className="hover:text-zinc-500 dark:hover:text-zinc-400"
-                        >
-                          #{tag}
-                        </a>
-                        {index < post.tags.length - 1 && ', '}
-                      </span>
-                    ))}
-                  </>
-                )}
+                {post.tags &&
+                  post.tags.map((tag, index) => (
+                    <span key={tag} className="pl-1">
+                      <a
+                        href={`/tags/${tag}`}
+                        className="hover:text-zinc-500 dark:hover:text-zinc-400"
+                      >
+                        #{tag}
+                      </a>
+                      {index < post.tags.length - 1 && ', '}
+                    </span>
+                  ))}
               </div>
             </header>
             <div className="text-md text-zinc-600">{post.content}</div>
@@ -117,4 +115,12 @@ export async function generateStaticParams() {
   return articles.map(article => ({
     slug: article.slug,
   }));
+}
+
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
 }

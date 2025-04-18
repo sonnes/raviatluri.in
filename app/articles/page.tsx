@@ -13,7 +13,7 @@ export default async function ArticlesIndex() {
 
   return (
     <Container className="mt-8 sm:mt-16">
-      <header className="max-w-3xl mb-10 border-b border-zinc-200 dark:border-zinc-800 pb-10">
+      <header className="max-w-3xl mb-10">
         <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
           {metadata.title}
         </h1>
