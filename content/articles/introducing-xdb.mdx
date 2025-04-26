@@ -10,13 +10,13 @@ tags:
 
 XDB is a new kind of database library based on tuples.
 
-Rather than writing database specific schemas, queries, and migrations, XDB allows developers to model their domain once and use it with one or more databases.
+Rather than writing database-specific schemas, queries, and migrations, XDB allows developers to model their domain once and use it with one or more databases.
 
-XDB separates the application domain model from the underlying database(s) by using a simple, yet powerful, data model based on tuples. It allows application developers to focus on modeling, ingesting, and querying data without worrying about the underlying database infrastructure and operations.
+XDB separates the application domain model from the underlying database(s) by using a simple yet powerful data model based on tuples. This lets developers focus on modeling, ingesting, and querying data—without worrying about the underlying database infrastructure or operations.
 
 ## Why?
 
-Not all databases are created equal. Each database comes with its own features and tradeoffs. Most applications, at scale, have multiple types of databases:
+Not all databases are created equal. Most applications at scale use multiple types of databases:
 
 - PostgreSQL/MySQL as the main database
 - Redis for caching
@@ -24,112 +24,208 @@ Not all databases are created equal. Each database comes with its own features a
 - Clickhouse for analytics
 - BigTable for versioning
 
-Every database solves a specific problem and has different tradeoffs.
+Each database solves a specific problem and comes with its own tradeoffs.
 
-An application domain model is often a combination data that resides in different databases. Typically, each database has its own "layer" abstracting away the migrations and queries. Alternatively, new microservices are created spunup to manage specific usecases like search, analytics, caching, etc.
+An application's domain model is often a combination of data that resides in different databases. Typically, each database has its own abstraction layer for migrations and queries. Sometimes, new microservices are spun up to manage specific use cases like search, analytics, or caching.
 
-At end of the day, developers have to stitch together domain data from multiple databases or microservices to serve user-facing APIs. Looking at an end-to-end flow, there are several layers data fetching, mutations, transformations, etc. Every time a feature adds new fields, relationships, etc. the entire stack goes through a churn.
+At the end of the day, developers must stitch together domain data from multiple databases or microservices to serve user-facing APIs. Looking at an end-to-end flow, there are several layers of data fetching, mutation, and transformation. Every time a feature adds new fields or relationships, the entire stack goes through churn.
 
-XDB is an attempt to separate application domain model from database implementation and operations. What if, instead of maintaining multiple database-specific implementations, developerscan model their domain once and seamlessly work with multiple databases.
+XDB aims to separate the application domain model from database implementation and operations. What if, instead of maintaining multiple database-specific implementations, developers could model their domain once and seamlessly work with multiple databases?
 
 ## Inspiration
 
-XDB draws inspiration from two key concepts - data services and N-Quads.
+XDB draws inspiration from two key concepts: **Data Services** and **N-Quads**.
 
-Data services are intermediary services that sit between the API and databases. Data services provide simple APIs for your domain data, while automating and abstracting away the underlying database management.
+Data services are intermediary services that sit between APIs and databases. They provide simple APIs for your domain data, while automating and abstracting away the underlying database management.
 
-<Image
-  src="/images/introducing-xdb/data-services.png"
-  alt="Data Services"
-/>
+<Image src="/images/introducing-xdb/data-services.png" alt="Data Services" />
 
-[N-Quad](https://www.w3.org/TR/n-quads/) is a well-known format often used to represent attributes and relationships in graphs. Dgraph extended extended the N-Quad format to support additional metadata for relationships.
+[N-Quad](https://www.w3.org/TR/n-quads/) is a well-known format used to represent attributes and relationships in graphs.
 
 ```
 <Post:9bsv0s5ocl6002kdg0fg> <title> "Hello World" .
 <Post:9bsv0s5ocl6002kdg0fg> <description> "..." .
-<Post:9bsv0s5ocl6002kdg0fg> <author> <User:1> .
+<Post:9bsv0s5ocl6002kdg0fg> <author> <1> .
 <Post:9bsv0s5ocl6002kdg0fg> <created_at> "2025-04-01T00:00:00Z"
-<Post:9bsv0s5ocl6002kdg0fg> <tags> <Tag:golang> .
-<Post:9bsv0s5ocl6002kdg0fg> <tags> <Tag:xdb> .
+<Post:9bsv0s5ocl6002kdg0fg> <tags> <golang> .
+<Post:9bsv0s5ocl6002kdg0fg> <tags> <xdb> .
+<User:1> <follows> <User:2> .
+<User:2> <likes> <Post:9bsv0s5ocl6002kdg0fg> .
 ```
 
-XDB was inspired by Dgraph's [Mutation API](https://github.com/hypermodeinc/dgo/blob/8fd6df819e01c401e89f57601fba40e5631a27de/protos/api.proto#L68) that uses N-Quads to insert or update data. What if this idea was extended to build an abstraction that could be used with any database?
+XDB was inspired by Dgraph's [Mutation API](https://github.com/hypermodeinc/dgo/blob/8fd6df819e01c401e89f57601fba40e5631a27de/protos/api.proto#L68), which uses N-Quads to insert or update data. What if this idea could be extended to build an abstraction usable with any database?
 
 ## Data Model
 
-XDB is built around three core concepts - **Tuple**, **Edge**, and **Record**.
+XDB is built around three core types - **Tuple**, **Edge**, and **Record**.
 
-**Tuple** is a combination of a key, name, value, and optional metadata.
+### Tuple
 
-<Image
-  src="/images/introducing-xdb/tuple.png"
-  alt="Tuple"
-/>
+A **Tuple** combines a kind, id, attribute name, value, and optional metadata.
 
-This simple yet powerful structure can represent any domain model while being easily mappable to various database formats.
+<Image src="/images/introducing-xdb/tuple.png" alt="Tuple" />
 
-**Edge** is a special kind of tuple whose value is also a key. Edges are unidirectional and are used to represent relationships between records.
+This simple yet powerful structure can represent any domain model and is easily mappable to various database formats.
 
-**Record** is a collection of tuples and edges that share the same key. Records are similar to objects, structs or rows in a database.
-
-## Developer Experience
-
-XDB is designed for building and managing data services. It can also be used to replace ORMs and traditional repository/database layers in applications.
-
-Here's how you can use XDB:
+Creating a tuple is as simple as:
 
 ```go
-// Start by creating tuples and edges.
-key := xdb.NewKey("Post", "9bsv0s5ocl6002kdg0fg")
+tuple := xdb.NewTuple("Post", "9bsv0s5ocl6002kdg0fg", "title", "Hello World")
+```
 
-tuples := []*xdb.Tuple{
-	xdb.NewTuple(key, "title", "Hello World"),
-	xdb.NewTuple(key, "description", "..."),
-	xdb.NewTuple(key, "created_at", time.Now()),
-}
+### Edge
 
-edges := []*xdb.Edge{
-	xdb.NewEdge(key, "author", xdb.NewKey("User", "1")),
-	xdb.NewEdge(key, "tags", xdb.NewKey("Tag", "golang")),
-	xdb.NewEdge(key, "tags", xdb.NewKey("Tag", "xdb")),
-}
+An **Edge** is a special kind of tuple whose value is a reference. Edges are unidirectional and represent relationships between records.
 
-// Use any of the driver implementations to store
-// the tuples and edges.
-memstore := xdbmemory.New()
+### Record
 
-_ = memstore.PutTuples(ctx, tuples...)
-_ = memstore.PutEdges(ctx, edges...)
+A **Record** is a collection of tuples that share the same kind and id. Records are similar to objects, structs, or rows in a database.
 
-// OR store the tuples and edges in different databases.
-tuplestore := xdbpostgres.New()
-edgestore := xdbredis.New()
 
-_ = edgestore.PutEdges(ctx, edges...)
-_ = tuplestore.PutTuples(ctx, tuples...)
+Create a record with tuples as:
 
-// Fetch the tuples and edges using Get APIs.
-keys := []*xdb.Key{
-	xdb.NewKey("Post", "9bsv0s5ocl6002kdg0fg"),
-}
-attrNames := []string{"title", "description", "created_at"}
-edgeNames := []string{"author", "tags"}
-
-tuples, _ := tupleStore.GetTuples(ctx, keys, attrNames)
-edges, _ := edgeStore.GetEdges(ctx, keys, edgeNames)
-
-// Alternatively, use higher-level Record APIs
-post := xdb.NewRecord(key).
+```go
+record := xdb.NewRecord("Post", "9bsv0s5ocl6002kdg0fg").
 	Set("title", "Hello World").
 	Set("description", "...").
 	Set("created_at", time.Now()).
-	AddEdge("author", xdb.NewKey("User", "1")).
-	AddEdge("tags", xdb.NewKey("Tag", "golang")).
-	AddEdge("tags", xdb.NewKey("Tag", "xdb"))
-
-_ = memstore.PutRecord(ctx, post)
-
-// Fetch the full post
-post, _ = memstore.GetRecord(ctx, key)
+	Set("author_id", "1").
+	Set("tags", []string{"golang", "xdb"})
 ```
+
+## Using XDB as Library
+
+XDB can be used as a library replacing the traditional repository/database layer in Go services.
+
+Let's see XDB in action. First, we'll define a simple domain model using standard Go structs:
+
+```go
+type Post struct {
+	ID          string    `xdb:"id,primary_key"`
+	Title       string    `xdb:"title"`
+	Description string    `xdb:"description"`
+	CreatedAt   time.Time `xdb:"created_at"`
+	AuthorID    string    `xdb:"author_id"`
+	Tags        []string  `xdb:"tags"`
+}
+```
+
+Now let's create, store, and retrieve a post:
+
+```go
+// Create a new post
+post := &Post{
+	ID:          "9bsv0s5ocl6002kdg0fg",
+	Title:       "Hello World",
+	Description: "A sample post about XDB",
+	CreatedAt:   time.Now(),
+	AuthorID:    "1",
+	Tags:        []string{"golang", "xdb"},
+}
+
+// Convert the struct to a record
+record, err := xdbstruct.Marshal(post)
+if err != nil {
+	log.Fatal(err)
+}
+
+// Create a new store using any of the driver implementations
+store := xdbmemory.New()
+
+// Store the record in the database
+err = store.PutRecord(ctx, record)
+if err != nil {
+	log.Fatal(err)
+}
+
+// Retrieve the record from the database
+record, err = store.GetRecord(ctx, record.Key())
+if err != nil {
+	log.Fatal(err)
+}
+
+// Convert the record back to a struct
+var fetchedPost Post
+err = xdbstruct.Unmarshal(record, &fetchedPost)
+if err != nil {
+	log.Fatal(err)
+}
+```
+
+This example uses an in-memory store, but XDB supports multiple database backends through its driver interface.
+
+## Routing Data
+
+But the real power of XDB is in its ability to "route" the same domain model to different databases. You can create a "routing" layer that moves around tuples, edges, and records between different databases.
+
+```go
+type RecordRouter struct {
+	Primary   xdb.RecordWriter 	// e.g. PostgreSQL
+	Cache     xdb.RecordWriter 	// e.g. Redis
+	Indexer   xdb.RecordIndexer // e.g. Elasticsearch
+}
+
+func (r *RecordRouter) PutRecord(ctx context.Context, record *xdb.Record) error {
+	// Save complete record to primary database as source of truth.
+	r.Primary.PutRecord(ctx, record)
+
+	// Then update the cache.
+	r.Cache.PutRecord(ctx, record)
+
+	// For search, only index relevant fields.
+	indexRecord := record.Keep("title", "description", "author", "tags")
+
+	r.Indexer.IndexRecord(ctx, indexRecord)
+}
+
+func (r *RecordRouter) GetRecord(ctx context.Context, key *xdb.Key) (*xdb.Record, error) {
+	// Get the record from cache.
+	record, err := r.Cache.GetRecord(ctx, key)
+	if err != nil {
+		return nil, err
+	}
+
+	// If not found, get from primary database.
+	if record == nil {
+		record, err = r.Primary.GetRecord(ctx, key)
+		if err != nil {
+			return nil, err
+		}
+
+		// Update the cache.
+		r.Cache.PutRecord(ctx, record)
+	}
+
+	return record, nil
+}
+```
+
+This flexibility allows you to distribute specific attributes of your domain model to the most appropriate databases. It also reduces redundant code for retries, error handling, monitoring, etc.
+
+## Building Blocks
+
+XDB APIs are designed to be simple, concise, composable, and easy to use.
+
+### Core Types
+
+The core types used to create tuples, edges, and records.
+
+### Encoding
+
+Encoding APIs are used to encode and decode tuples, edges, and records to and from JSON, Protobuf, Go structs, etc.
+
+### Drivers
+
+Drivers are database-specific implementations that translate between XDB's tuple-based model and the database's data model.
+
+XDB exposes interfaces for drivers to implement. Each interface is like a **capability** that a database supports.
+
+The most basic capabilities like storing & retrieving tuples, edges, and records are implemented by all databases. More capabilities like search, aggregation, iteration, edge traversal, etc. are optional and implemented by specific drivers.
+
+### Stores
+
+Stores are implemented by combining different drivers with different capabilities. Stores provide higher-level APIs for common use-cases. For example, a **Cache Store** might provide an API for getting a record from cache or a **Search Store** might provide an API for searching records.
+
+### Schema
+
+Schema APIs are used to define database-agnostic schemas of application domain models. Schema APIs are used by drivers to generate database-specific schemas and manage migrations.
