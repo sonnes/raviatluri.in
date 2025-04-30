@@ -121,12 +121,12 @@ const customComponents = {
             width={800}
             height={600}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="rounded-lg"
+            className="rounded-lg shadow-sm"
             alt={alt}
             {...rest}
           />
         </div>
-        <div className="text-xs italic text-gray-800">{props.alt}</div>
+        <div className="mt-2 text-xs italic text-gray-800">{props.alt}</div>
       </div>
     );
   },
