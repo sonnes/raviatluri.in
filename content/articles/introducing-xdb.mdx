@@ -42,6 +42,8 @@ Data services are intermediary services that sit between APIs and databases. The
 
 [N-Quad](https://www.w3.org/TR/n-quads/) is a well-known format used to represent attributes and relationships in graphs.
 
+Here's an example of N-Quad format:
+
 ```
 <Post:9bsv0s5ocl6002kdg0fg> <title> "Hello World" .
 <Post:9bsv0s5ocl6002kdg0fg> <description> "..." .
@@ -67,7 +69,7 @@ A **Tuple** combines a kind, id, attribute name, value, and optional metadata.
 
 This simple yet powerful structure can represent any domain model and is easily mappable to various database formats.
 
-Creating a tuple is as simple as:
+Here's how to create a tuple:
 
 ```go
 tuple := xdb.NewTuple("Post", "9bsv0s5ocl6002kdg0fg", "title", "Hello World")
@@ -81,8 +83,7 @@ An **Edge** is a special kind of tuple whose value is a reference. Edges are uni
 
 A **Record** is a collection of tuples that share the same kind and id. Records are similar to objects, structs, or rows in a database.
 
-
-Create a record with tuples as:
+Here's how to create a record with tuples:
 
 ```go
 record := xdb.NewRecord("Post", "9bsv0s5ocl6002kdg0fg").
@@ -93,11 +94,11 @@ record := xdb.NewRecord("Post", "9bsv0s5ocl6002kdg0fg").
 	Set("tags", []string{"golang", "xdb"})
 ```
 
-## Using XDB as Library
+## Using XDB As A Library
 
 XDB can be used as a library replacing the traditional repository/database layer in Go services.
 
-Let's see XDB in action. First, we'll define a simple domain model using standard Go structs:
+Let's first define a simple domain model using standard Go structs:
 
 ```go
 type Post struct {
@@ -110,7 +111,7 @@ type Post struct {
 }
 ```
 
-Now let's create, store, and retrieve a post:
+Now, let's walk through creating, storing, and retrieving a post:
 
 ```go
 // Create a new post
@@ -152,11 +153,9 @@ if err != nil {
 }
 ```
 
-This example uses an in-memory store, but XDB supports multiple database backends through its driver interface.
-
 ## Routing Data
 
-But the real power of XDB is in its ability to "route" the same domain model to different databases. You can create a "routing" layer that moves around tuples, edges, and records between different databases.
+The real power of XDB lies in its ability to "route" the same domain model to different databases. Let's explore how to create a "routing" layer that moves around tuples, edges, and records between different databases:
 
 ```go
 type RecordRouter struct {
@@ -200,32 +199,112 @@ func (r *RecordRouter) GetRecord(ctx context.Context, key *xdb.Key) (*xdb.Record
 }
 ```
 
-This flexibility allows you to distribute specific attributes of your domain model to the most appropriate databases. It also reduces redundant code for retries, error handling, monitoring, etc.
+This pattern allows you to distribute specific attributes of your domain model to the most appropriate databases. It also centralizes code & logic for retries, error handling, monitoring, etc.
 
 ## Building Blocks
 
-XDB APIs are designed to be simple, concise, composable, and easy to use.
+XDB APIs are designed to be simple, composable, and easy to use. Let's explore the key building blocks that make up the XDB ecosystem.
 
 ### Core Types
 
-The core types used to create tuples, edges, and records.
+The core types used to create tuples, edges, and records form the foundation of XDB's data model.
 
 ### Encoding
 
-Encoding APIs are used to encode and decode tuples, edges, and records to and from JSON, Protobuf, Go structs, etc.
+The encoding APIs provide consistent methods for converting between XDB's data types and various formats. Here's how to use different encoding options:
+
+```go
+import (
+	"github.com/xdb-dev/xdb/encoding/xdbjson"
+	"github.com/xdb-dev/xdb/encoding/xdbproto"
+	"github.com/xdb-dev/xdb/encoding/xdbstruct"
+)
+
+var record *xdb.Record
+
+// JSON encoding and decoding
+jsonBytes, err := xdbjson.Marshal(record)
+err = xdbjson.Unmarshal(jsonBytes, &record)
+
+// Protobuf encoding and decoding
+record, err = xdbproto.ToRecord(pb)
+err = xdbproto.FromRecord(record, &pb)
+
+// Go struct encoding and decoding
+var post Post
+record, err = xdbstruct.ToRecord(&post)
+err = xdbstruct.FromRecord(record, &post)
+```
 
 ### Drivers
 
-Drivers are database-specific implementations that translate between XDB's tuple-based model and the database's data model.
+Drivers serve as the bridge between XDB's tuple-based model and specific database implementations. All drivers always implement the basic **Reader** and **Writer** capabilities:
 
-XDB exposes interfaces for drivers to implement. Each interface is like a **capability** that a database supports.
+```go
+type RecordReader interface {
+	GetRecords(ctx context.Context, keys []xdb.Key) ([]*xdb.Record, []*xdb.Key, error)
+}
 
-The most basic capabilities like storing & retrieving tuples, edges, and records are implemented by all databases. More capabilities like search, aggregation, iteration, edge traversal, etc. are optional and implemented by specific drivers.
+type RecordWriter interface {
+	PutRecords(ctx context.Context, records []*xdb.Record) error
+	DeleteRecords(ctx context.Context, keys []xdb.Key) error
+}
+```
+
+Advanced capabilities, like full-text search, aggregation, iteration, etc. are implemented by specific drivers based on their database features:
+
+```go
+type RecordIndexer interface {
+	IndexRecords(ctx context.Context, records []*xdb.Record) error
+}
+
+type RecordSearcher interface {
+	SearchRecords(ctx context.Context, query *xdb.Query) ([]*xdb.Record, error)
+}
+
+type TupleIterator interface {
+	IterateTuples(ctx context.Context, func(tuple *xdb.Tuple) error, opts ...xdb.IteratorOption) error
+}
+
+type EdgeIterator interface {
+	IterateEdges(ctx context.Context, func(edge *xdb.Edge) error, opts ...xdb.IteratorOption) error
+}
+```
 
 ### Stores
 
-Stores are implemented by combining different drivers with different capabilities. Stores provide higher-level APIs for common use-cases. For example, a **Cache Store** might provide an API for getting a record from cache or a **Search Store** might provide an API for searching records.
+Stores provide higher-level APIs that combine multiple drivers to support common use-cases. Here's an example of a cached store implementation:
+
+```go
+type RecordStore interface {
+	xdb.RecordReader
+	xdb.RecordWriter
+}
+
+type CachedRecordStore struct {
+	Primary   RecordStore
+	Cache     RecordStore
+}
+
+func (s *CachedRecordStore) GetRecords(ctx context.Context, keys []xdb.Key) ([]*xdb.Record, error) {
+	// ...
+}
+
+func (s *CachedRecordStore) PutRecords(ctx context.Context, records []*xdb.Record) error {
+	// ...
+}
+
+func (s *CachedRecordStore) DeleteRecords(ctx context.Context, keys []xdb.Key) error {
+	// ...
+}
+```
+
+Store implementations also satisfy the capability interfaces they implement. This allows you to use a store as a driver or to layer & compose stores & drivers for more complex use-cases.
 
 ### Schema
 
-Schema APIs are used to define database-agnostic schemas of application domain models. Schema APIs are used by drivers to generate database-specific schemas and manage migrations.
+The Schema APIs provide a database-agnostic way to define and manage your application's domain models. These APIs enable:
+
+- Runtime type checking and constraint enforcement
+- Generation of database-specific schemas
+- Migration management
