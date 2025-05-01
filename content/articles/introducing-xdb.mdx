@@ -125,7 +125,7 @@ post := &Post{
 }
 
 // Convert the struct to a record
-record, err := xdbstruct.Marshal(post)
+record, err := xdbstruct.ToRecord(post)
 if err != nil {
 	log.Fatal(err)
 }
@@ -147,7 +147,7 @@ if err != nil {
 
 // Convert the record back to a struct
 var fetchedPost Post
-err = xdbstruct.Unmarshal(record, &fetchedPost)
+err = xdbstruct.FromRecord(record, &fetchedPost)
 if err != nil {
 	log.Fatal(err)
 }
@@ -221,19 +221,25 @@ import (
 )
 
 var record *xdb.Record
+var post Post
+var pb proto.Message
 
-// JSON encoding and decoding
-jsonBytes, err := xdbjson.Marshal(record)
-err = xdbjson.Unmarshal(jsonBytes, &record)
+// Convert struct to record
+record, err = xdbstruct.ToRecord(post)
+// Convert record to struct
+err = xdbstruct.FromRecord(record, &post)
 
-// Protobuf encoding and decoding
+// Convert protobuf message to record
 record, err = xdbproto.ToRecord(pb)
+// Convert record to protobuf message
 err = xdbproto.FromRecord(record, &pb)
 
-// Go struct encoding and decoding
-var post Post
-record, err = xdbstruct.ToRecord(&post)
-err = xdbstruct.FromRecord(record, &post)
+var jsonBytes []byte
+
+// Convert record to JSON
+jsonBytes, err = xdbjson.FromRecord(record)
+// Convert JSON to record
+err = xdbjson.ToRecord(jsonBytes, &record)
 ```
 
 ### Drivers
