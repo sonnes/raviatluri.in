@@ -1,0 +1,122 @@
+---
+author: Ravi Atluri
+date: 2025-05-07
+title: Introducing xkafka
+description: xkafka is a Go library for publishing to and consuming messages from Apache Kafka.
+tags:
+  - kafka
+  - golang
+---
+
+**xkafka** is a Go library for publishing to and consuming messages from Apache Kafka. It is a wrapper around the [confluent-kafka-go](https://github.com/confluentinc/confluent-kafka-go) library providing higher-level HTTP-like APIs for working with Kafka.
+
+A typical Kafka consumer, using `confluent-kafka-go`, looks like this:
+
+```go
+consumer, err := kafka.NewConsumer(&kafka.ConfigMap{/*...*/})
+
+if err != nil {
+    panic(err)
+}
+
+err = consumer.SubscribeTopics([]string{/*...*/}, nil)
+
+// A signal handler to gracefully stop the consumer
+run := true
+
+for run {
+    msg, err := consumer.ReadMessage(time.Second)
+    if !err.(kafka.Error).IsTimeout() {
+        // handle error from consumer/broker
+    }
+
+    // process message
+
+    // manually commit the offset, if needed
+}
+
+consumer.Close()
+```
+
+Message processing typically involves:
+
+- deserializing the message
+- processing the message
+- handling application errors
+- retrying transient errors
+- logging
+- metrics
+
+For applications processing multiple types of messages, the code quickly explodes in verbosity and complexity. But, most of the code - initialization, polling, error handling, instrumentation, retries, etc. - is redundant and can be abstracted away. Doing this allows applications to just focus on the message processing logic.
+
+## API Design
+
+The API is designed to use HTTP-like semantics for ease of use and composability. **Message** and **Handler** are the two core building blocks of the API.
+
+**Message** is equivalent to an HTTP request. It contains the Kafka topic, partition, offset, message key, value, headers, etc. Additionally, it provides methods to track the processing status of the message.
+
+**Handler** is equivalent to an HTTP handler. It is responsible for processing the message and propagating errors.
+
+**Middleware** is a wrapper around **Handlers** providing functionality to handle common patterns like logging, metrics, retries, etc.
+
+## Producer
+
+**xkafka.Producer** provides a simple API for publishing messages to Kafka.
+
+```go
+producer, err := xkafka.NewProducer(
+    "producer-id",
+    xkafka.Brokers{"localhost:9092"},
+    xkafka.ConfigMap{
+        "socket.keepalive.enable": true,
+    },
+)
+
+producer.Use(/* add middlewares */)
+
+msg := &xkafka.Message{
+    Topic: "test",
+    Key:   []byte("key"),
+    Value: []byte("value"),
+}
+
+if err := producer.Publish(ctx, msg)
+```
+
+There is an async variant of the `Publish` method that queues messages and returns immediately.
+
+```go
+producer, err := xkafka.NewProducer(
+    // ...
+    // configure a callback to handle delivery events
+    xkafka.DeliveryCallback(func(msg *xkafka.Message) {
+        // ...
+    }),
+)
+
+// ...
+
+// alternatively, configure a callback on the message
+msg.AddCallback(func(msg *xkafka.Message) {
+    // ...
+})
+
+// start the producer
+go producer.Run(ctx)
+
+// publish a message asynchronously
+err = producer.AsyncPublish(ctx, msg)
+```
+
+## Consumer
+
+**xkafka.Consumer** provides configuration of:
+
+1. Processing Mode - synchronous or asynchronous
+2. Offset Commit - manual or automatic
+
+Both of these can be used in combinations to achieve different throughput and durability tradeoffs.
+
+## Error Handling
+
+One of tricky parts of Kafka is handling transient errors and retries.
