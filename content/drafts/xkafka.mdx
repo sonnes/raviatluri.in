@@ -1,67 +1,61 @@
 ---
 author: Ravi Atluri
 date: 2025-05-07
-title: Introducing xkafka
-description: xkafka is a Go library for publishing to and consuming messages from Apache Kafka.
+title: Introducing xkafka - Kafka, but Simpler (for Go)
+description: xkafka is a Go library that brings HTTP-like abstractions to Apache Kafka. It simplifies producing and consuming messages by using familiar concepts like handlers and middleware, reducing boilerplate and letting you focus on business logic.
 tags:
   - kafka
   - golang
 ---
 
-**xkafka** is a Go library for publishing to and consuming messages from Apache Kafka. It is a wrapper around the [confluent-kafka-go](https://github.com/confluentinc/confluent-kafka-go) library providing higher-level HTTP-like APIs for working with Kafka.
+I've spent a fair bit of time writing Kafka consumers & producers in Go. If you have used [confluent-kafka-go](https://github.com/confluentinc/confluent-kafka-go), you know the drill.
 
-A typical Kafka consumer, using `confluent-kafka-go`, looks like this:
+Your consumer probably looks something like this:
 
 ```go
 consumer, err := kafka.NewConsumer(&kafka.ConfigMap{/*...*/})
 
-if err != nil {
-    panic(err)
-}
-
 err = consumer.SubscribeTopics([]string{/*...*/}, nil)
 
-// A signal handler to gracefully stop the consumer
+// some way to cancel and stop the consumer
 run := true
-
 for run {
     msg, err := consumer.ReadMessage(time.Second)
     if !err.(kafka.Error).IsTimeout() {
         // handle error from consumer/broker
     }
-
     // process message
-
     // manually commit the offset, if needed
 }
-
 consumer.Close()
 ```
 
-Message processing typically involves:
+There's a lot that goes into the processing loop:
 
-- deserializing the message
-- processing the message
-- handling application errors
-- retrying transient errors
-- logging
-- metrics
+- read messages
+- handle Kafka & application errors
+- retry transient errors
+- metrics, logging, tracing, etc.
+- secondary dead letter queues
+- and, of course, wiring all this together
 
-For applications processing multiple types of messages, the code quickly explodes in verbosity and complexity. But, most of the code - initialization, polling, error handling, instrumentation, retries, etc. - is redundant and can be abstracted away. Doing this allows applications to just focus on the message processing logic.
+A surprising amount of code in there isn't really about your application logic. If you're building something that consumes more than one kind of message, this gets verbose fast. Most of the code is just scaffolding.
 
-## API Design
+What if we could make using Kafka, in Go, feel more like writing a simple HTTP service?
 
-The API is designed to use HTTP-like semantics for ease of use and composability. **Message** and **Handler** are the two core building blocks of the API.
+## HTTP-like Kafka
 
-**Message** is equivalent to an HTTP request. It contains the Kafka topic, partition, offset, message key, value, headers, etc. Additionally, it provides methods to track the processing status of the message.
+**xkafka** is a Go library that provides HTTP-like abstractions for Kafka. It tries to make working with Kafka feel a bit more like writing a simple HTTP service, and a lot less boilerplate & plumbing.
 
-**Handler** is equivalent to an HTTP handler. It is responsible for processing the message and propagating errors.
+Here are the core abstractions:
 
-**Middleware** is a wrapper around **Handlers** providing functionality to handle common patterns like logging, metrics, retries, etc.
+- **Message**: Like an HTTP request. It has the topic, partition, offset, key, value, headers, and so on. It also allows callbacks to track message processing.
+- **Handler**: Like an HTTP handler. It's where your business logic lives.
+- **Middleware**: Just like HTTP middleware, but for Kafka. You can add logging, metrics, retries, etc., without cluttering your core logic.
 
-## Producer
+## Publishing Messages
 
-**xkafka.Producer** provides a simple API for publishing messages to Kafka.
+First, let's get simple things out of the way. Here's what publishing a message looks like with xkafka:
 
 ```go
 producer, err := xkafka.NewProducer(
@@ -79,11 +73,10 @@ msg := &xkafka.Message{
     Key:   []byte("key"),
     Value: []byte("value"),
 }
-
-if err := producer.Publish(ctx, msg)
+err = producer.Publish(ctx, msg)
 ```
 
-There is an async variant of the `Publish` method that queues messages and returns immediately.
+That's it. You can also publish asynchronously if you want higher throughput or want to handle delivery events asynchronously:
 
 ```go
 producer, err := xkafka.NewProducer(
@@ -94,28 +87,77 @@ producer, err := xkafka.NewProducer(
     }),
 )
 
-// ...
-
-// alternatively, configure a callback on the message
+// ...create a message
+// or, configure a callback on the message itself
 msg.AddCallback(func(msg *xkafka.Message) {
     // ...
 })
 
-// start the producer
+// start the producer. this will start a background goroutine
+// that will handle message delivery events.
 go producer.Run(ctx)
 
-// publish a message asynchronously
+// publish a message. this will return immediately.
 err = producer.AsyncPublish(ctx, msg)
 ```
 
-## Consumer
+## Consuming Messages
 
-**xkafka.Consumer** provides configuration of:
+Typically, Kafka consumers can be configured and written differently based on the tradeoffs you want to make between throughput, durability, and delivery guarantees.
 
-1. Processing Mode - synchronous or asynchronous
-2. Offset Commit - manual or automatic
+**xkafka** distills most commonly used patterns into a few simple abstractions. It does this without sacrificing your control over the underlying Kafka client.
 
-Both of these can be used in combinations to achieve different throughput and durability tradeoffs.
+### Consumption Modes
+
+There are two consumption modes: streaming and batch.
+
+`xkafka.Consumer` is a streaming consumer that processes messages one at a time. It's useful for low-throughput systems where you want to:
+
+- process messages as soon as they're available
+- have message processing guarantees
+- have a small memory footprint
+
+`xkafka.BatchConsumer` is a batch consumer that processes messages in batches. Batches can be configured to a fixed size or duration. It's useful for high-throughput systems where you want to:
+
+- absorb spikes in message volume
+- protect downstream systems/databases from high-frequency writes
+- deduplicate messages
+
+Both consumers ensure that messages are processed in order. For `xkafka.BatchConsumer`, messages are added to the batch in the order they're received.
+
+### Processing Modes
+
+Processing modes determine how the messages are processed by the `Handler`. Both `xkafka.Consumer` and `xkafka.BatchConsumer` support sequential and asynchronous processing.
+
+```go
+consumer, err := xkafka.NewConsumer(
+    // ...
+    // Default is 1.
+    // Available in `xkafka.Consumer` and `xkafka.BatchConsumer`.
+    // Set to value > 1 to process messages/batches asynchronously.
+    xkafka.Concurrency(10),
+)
+```
+
+In sequential mode, the next message/batch is not read until the current one is processed. In asynchronous mode, the next message/batch is read in the background while the current one is being processed.
+
+Kafka consumers save offsets in two steps - _store_ and _commit_. By default, `enable.auto.offset.store=true` which increments the offset after reading the message. This means that the offset moves forward even if the message is not processed. In combination with `enable.auto.commit=true`, this can lead to lost messages.
+
+**xkafka** changes this behavior to always increment & store the offset after the message is processed. This ensures that no messages are lost even if the consumer crashes or if the downstream system is slow/unavailable. In `xkafka.BatchConsumer`, the highest offset per topic-partition is incremented & stored after the batch is processed.
+
+This simple change removes the need for a separate database/queue to guarantee message processing.
+
+### Offset Commit
+
+By default, both `xkafka.Consumer` and `xkafka.BatchConsumer` use `enable.auto.commit=true`. This means that the consumer will commit stored offsets periodically, based on the configured `auto.commit.interval.ms`, in the background.
+
+#### At-Most-Once Delivery
+
+For use cases where you need at-most-once delivery, you can enable `xkafka.ManualCommit(true)` to commit offsets manually. Enabling this option ensures that the message/batch offset is synchronously committed before reading the next message/batch.
+
+#### At-Least-Once Delivery
+
+Using `xkafka.ManualCommit(true)` in asynchronous mode (with `Concurrency > 1`), provides at-least-once delivery guarantees. Even though the messages/batches are continuously read and processed in the background, the offsets are committed in order, synchronously. In case of a crash, the message/batch from the last committed offset is re-processed.
 
 ## Error Handling
 
