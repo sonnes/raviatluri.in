@@ -51,6 +51,18 @@ const customComponents = {
   },
   code: ({ children, className, style, ...props }: ComponentPropsWithoutRef<'code'>) => {
     const language = className?.replace('language-', '');
+    // Inline code: no className
+    if (!className) {
+      return (
+        <code
+          className="bg-zinc-100 dark:bg-zinc-800 rounded px-1.5 py-0.5 font-mono text-[0.90em]"
+          {...props}
+        >
+          {children}
+        </code>
+      );
+    }
+    // Code block
     const customStyle = style || {
       margin: '1.5rem 0',
       padding: '1rem',
