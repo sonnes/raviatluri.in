@@ -103,9 +103,28 @@ err = producer.AsyncPublish(ctx, msg)
 
 ## Consuming Messages
 
-Let's talk about the other side of Kafka: consuming messages. In my experience, this is where most of the complexity (and headaches) with Kafka show up. There are so many ways to configure and process messages in a consumer. The tradeoffs between throughput, durability, and delivery guarantees can get confusing and complicated.
+Now let's talk about the other side of Kafka: consuming messages. In my experience, this is where most of the complexity (and headaches) with Kafka show up. There are so many ways to configure and process messages in a consumer. The tradeoffs between throughput, durability, and delivery guarantees can get confusing and complicated.
 
 **xkafka** distills the most common patterns into a few simple abstractions and sensible defaults, while still giving you the flexibility to tune things for your needs.
+
+```go
+handler := xkafka.HandlerFunc(func(ctx context.Context, msg *xkafka.Message) error {
+    // ...
+    return nil
+})
+
+consumer, err := xkafka.NewConsumer(
+    "consumer-id", // consumer group id
+    handler,
+    xkafka.Brokers{"localhost:9092"},
+    xkafka.Topics{"test"},
+    xkafka.ConfigMap{/*...*/},
+)
+
+consumer.Use(/* add middlewares */)
+
+err = consumer.Run(ctx)
+```
 
 ### Streaming vs. Batch
 
@@ -141,7 +160,7 @@ To solve this, I have seen developers add a separate database or queue to guaran
 
 This means you don't need a separate database or queue just to keep track of what you've processed. Kafka handles it for you.
 
-Note: If you are tracking the Kafka lag, remember that increasing lag is not a bad thing. Instead of optimizing for zero lag by offloading messages to another queue, you should focus on improving throughput of your downstream systems.
+**Note:** If you are tracking the Kafka lag, remember that increasing lag is not a bad thing. Instead of optimizing for zero lag by offloading messages to another queue, you should focus on improving throughput of your downstream systems.
 
 #### At-Most-Once Guarantee
 
@@ -155,7 +174,7 @@ If you combine `xkafka.ManualCommit(true)` with `xkafka.Concurrency(N > 1)`, you
 
 ## Error Handling
 
-One of the tricky parts of Kafka is handling broker errors, application errors, transient errors, and retries. **xkafka** allows you to handle errors in three different ways:
+One of the tricky parts of Kafka is handling broker errors, application errors, transient errors, and retries. **xkafka** allows you to handle errors in a layered way:
 
 ### Handler Level
 
