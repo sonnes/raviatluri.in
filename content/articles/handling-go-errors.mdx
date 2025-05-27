@@ -1,0 +1,118 @@
+---
+author: Ravi Atluri
+date: 2025-05-27
+title: Handling Errors in Go - Beyond the Basics
+description: Go's error handling philosophy is simple, but some applications need more than just error strings. By combining error wrapping, custom error types, and structured error metadata, you can build maintainable, and observable Go applications.
+tags:
+  - golang
+  - xtools
+---
+
+If you've written Go, you know that error handling is a core part of the language. Go's approach is pretty simple: errors are just values, and you're expected to check and handle them explicitly.
+
+The simplest way to create and use errors in Go is with `errors.New`:
+
+```go
+var ErrUserNotFound = errors.New("user not found")
+
+func GetUser(id int) (User, error) {
+    if id == 0 {
+        return User{}, ErrUserNotFound
+    }
+    // ...
+}
+```
+
+Checking for specific errors is straightforward with `errors.Is`:
+
+```go
+if errors.Is(err, ErrUserNotFound) {
+    // handle user not found
+}
+```
+
+This works well for most applications. But, sometimes you'll want to add & propagate more context with errors, while still preserving the original error value.
+
+Go 1.13 introduced error wrapping with `%w` in `fmt.Errorf`. This lets you add context while preserving the original error:
+
+```go
+func GetUser(id int) (User, error) {
+    if id == 0 {
+        return User{}, fmt.Errorf("user with id %d not found: %w", id, ErrUserNotFound)
+    }
+    // ...
+}
+```
+
+You can still use `errors.Is` to check for the original error, but you lose access to the extra metadata (like the user ID) as the error propagates.
+
+To carry metadata with your errors, you can define a custom error type:
+
+```go
+type UserNotFoundError struct {
+    ID int
+}
+
+func (e *UserNotFoundError) Error() string {
+    return fmt.Sprintf("user with id %d not found", e.ID)
+}
+
+func GetUser(id int) (User, error) {
+    if id == 0 {
+        return User{}, &UserNotFoundError{ID: id}
+    }
+    // ...
+}
+```
+
+This lets you attach structured data to your errors, but it comes with a cost: you'll end up creating lots of custom error types, which can get verbose and hard to maintain—especially if you want to add structured logging, metrics, or handle errors in middleware and HTTP handlers.
+
+What if you could attach arbitrary key-value pairs to errors, and access them anywhere the error is handled?
+
+[`xtools/errors`](https://github.com/gojekfarm/xtools) ([docs](https://pkg.go.dev/github.com/gojekfarm/xtools/errors)) makes this possible by allowing you to attach arbitrary key-value pairs to errors:
+
+```go
+package errors_test
+
+import (
+	"fmt"
+
+	"github.com/gojekfarm/xtools/errors"
+)
+
+func ExampleWrap() {
+	// Create a generic error
+	err := errors.New("record not found")
+
+	// Wrap the error with key-value pairs
+	wrapped := errors.Wrap(
+		err,
+		"table", "users",
+		"id", "123",
+	)
+
+	// Add more tags as the error propagates
+	wrapped = errors.Wrap(
+		wrapped,
+		"experiment_id", "456",
+	)
+
+	// errors.Is will check for not found error
+	fmt.Println(errors.Is(wrapped, err))
+
+	// Use errors.As to read attached tags.
+	var errTags *errors.ErrorTags
+
+	errors.As(wrapped, &errTags)
+
+	// Use the tags to construct detailed error messages,
+	// log additional context, or return structured errors.
+	fmt.Println(errTags.All())
+}
+```
+
+With this approach, you can:
+
+- Attach context as the error propagates (e.g., table, user ID, experiment ID)
+- Check for specific error types with `errors.Is`
+- Extract all attached metadata for logging, metrics, or constructing API responses
