@@ -10,7 +10,8 @@
       "mcp__playwright__browser_press_key",
       "mcp__playwright__browser_console_messages",
       "Bash(git checkout:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "defaultMode": "acceptEdits"
   }

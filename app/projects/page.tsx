@@ -21,7 +21,8 @@ type Project = {
 const projects: Project[] = [
   {
     name: 'xkafka',
-    description: 'HTTP-like abstractions for Apache Kafka in Go. Simplifies producing and consuming with familiar handlers and middleware patterns.',
+    description:
+      'HTTP-like abstractions for Apache Kafka in Go. Simplifies producing and consuming with familiar handlers and middleware patterns.',
     link: {
       href: 'https://github.com/gojekfarm/xtools/tree/main/xkafka',
       label: 'github.com/gojekfarm/xtools',
@@ -33,7 +34,8 @@ const projects: Project[] = [
   },
   {
     name: 'xtools/errors',
-    description: 'Enhanced error handling for Go applications with structured metadata and context propagation.',
+    description:
+      'Enhanced error handling for Go applications with structured metadata and context propagation.',
     link: {
       href: 'https://github.com/gojekfarm/xtools/tree/main/errors',
       label: 'github.com/gojekfarm/xtools',
@@ -45,7 +47,8 @@ const projects: Project[] = [
   },
   {
     name: 'xdb',
-    description: 'Tuple-based database abstraction library enabling domain modeling across multiple database backends.',
+    description:
+      'Tuple-based database abstraction library enabling domain modeling across multiple database backends.',
     link: {
       href: 'https://github.com/sonnes/xdb',
       label: 'github.com/sonnes/xdb',
@@ -56,7 +59,8 @@ const projects: Project[] = [
   },
   {
     name: 'Life in Weeks',
-    description: 'Personal data visualization showing major life events, career progression, and experiences over time.',
+    description:
+      'Personal data visualization showing major life events, career progression, and experiences over time.',
     link: {
       href: '/life',
       label: 'View Visualization',
@@ -68,7 +72,8 @@ const projects: Project[] = [
 
 export const metadata = {
   title: 'Projects',
-  description: 'Open source libraries, development tools, and personal projects that solve real-world engineering challenges.',
+  description:
+    'Open source libraries, development tools, and personal projects that solve real-world engineering challenges.',
 };
 
 export default function Projects() {
@@ -76,7 +81,9 @@ export default function Projects() {
     <>
       <Container className="mt-8 sm:mt-16">
         <header className="max-w-4xl pb-10">
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">{metadata.title}</h1>
+          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
+            {metadata.title}
+          </h1>
           <p className="mt-6 text-lg text-zinc-600 dark:text-zinc-400">{metadata.description}</p>
           <div className="mt-8 flex flex-wrap gap-2">
             <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300 rounded-full">
@@ -91,97 +98,43 @@ export default function Projects() {
           </div>
         </header>
 
-        <div className="space-y-16">
-          {/* Featured Projects */}
-          <div>
-            <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100 mb-8">Featured Projects</h2>
-            <ul role="list" className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-              {projects.filter(project => project.featured).map(project => (
-                <Card as="li" key={project.name} className={project.featured ? 'ring-1 ring-red-200 dark:ring-red-800' : ''}>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      {project.featured && (
-                        <div className="inline-flex items-center px-2 py-1 text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 rounded mb-4">
-                          Featured
-                        </div>
-                      )}
-                      <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
-                        <Card.Link href={project.link.href}>{project.name}</Card.Link>
-                      </h3>
-                      <div className="mt-1 inline-flex items-center px-2 py-1 text-xs bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 rounded">
-                        {project.category}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <Card.Description className="mt-4">{project.description}</Card.Description>
-                  
-                  <div className="mt-4 flex flex-wrap gap-1">
-                    {project.technologies.map(tech => (
-                      <span key={tech} className="inline-flex items-center px-2 py-1 text-xs bg-zinc-50 text-zinc-600 dark:bg-zinc-800/50 dark:text-zinc-400 rounded">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                  
-                  {project.impact && (
-                    <div className="mt-3 text-sm text-green-600 dark:text-green-400 font-medium">
-                      ✓ {project.impact}
-                    </div>
-                  )}
-                  
-                  <p className="relative z-10 mt-6 flex text-sm font-medium text-zinc-400 transition group-hover:text-red-500">
-                    <LinkIcon className="h-5 w-5 flex-none" />
-                    <span className="ml-2">{project.link.label}</span>
-                  </p>
-                </Card>
-              ))}
-            </ul>
-          </div>
-          
-          {/* Other Projects */}
-          <div>
-            <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100 mb-8">Other Projects</h2>
-            <ul role="list" className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {projects.filter(project => !project.featured).map(project => (
-                <Card as="li" key={project.name}>
-                  <h3 className="text-base font-semibold text-zinc-800 dark:text-zinc-100">
-                    <Card.Link href={project.link.href}>{project.name}</Card.Link>
-                  </h3>
-                  <div className="mt-1 inline-flex items-center px-2 py-1 text-xs bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 rounded">
-                    {project.category}
-                  </div>
-                  
-                  <Card.Description className="mt-3">{project.description}</Card.Description>
-                  
-                  <div className="mt-3 flex flex-wrap gap-1">
-                    {project.technologies.slice(0, 3).map(tech => (
-                      <span key={tech} className="inline-flex items-center px-2 py-1 text-xs bg-zinc-50 text-zinc-600 dark:bg-zinc-800/50 dark:text-zinc-400 rounded">
-                        {tech}
-                      </span>
-                    ))}
-                    {project.technologies.length > 3 && (
-                      <span className="inline-flex items-center px-2 py-1 text-xs text-zinc-500 dark:text-zinc-400">
-                        +{project.technologies.length - 3} more
-                      </span>
-                    )}
-                  </div>
-                  
-                  {project.impact && (
-                    <div className="mt-2 text-sm text-green-600 dark:text-green-400 font-medium">
-                      ✓ {project.impact}
-                    </div>
-                  )}
-                  
-                  <p className="relative z-10 mt-4 flex text-sm font-medium text-zinc-400 transition group-hover:text-red-500">
-                    <LinkIcon className="h-4 w-4 flex-none" />
-                    <span className="ml-2">{project.link.label}</span>
-                  </p>
-                </Card>
-              ))}
-            </ul>
-          </div>
-        </div>
+        <ul role="list" className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {projects.map(project => (
+            <Card as="li" key={project.name}>
+              <div className="flex items-start justify-between mb-3">
+                <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+                  <Card.Link href={project.link.href}>{project.name}</Card.Link>
+                </h3>
+              </div>
+
+              <Card.Description>{project.description}</Card.Description>
+
+              <div className="flex flex-wrap gap-2 mb-3">
+                {project.technologies.slice(0, 3).map(tech => (
+                  <span key={tech} className="text-xs text-zinc-600 dark:text-zinc-400">
+                    {tech}
+                  </span>
+                ))}
+                {project.technologies.length > 3 && (
+                  <span className="text-xs text-zinc-500 dark:text-zinc-500">
+                    +{project.technologies.length - 3}
+                  </span>
+                )}
+              </div>
+
+              {project.impact && (
+                <div className="text-sm text-green-600 dark:text-green-400 mb-4">
+                  {project.impact}
+                </div>
+              )}
+
+              <p className="relative z-10 flex text-sm font-medium text-zinc-400 transition group-hover:text-red-500">
+                <LinkIcon className="h-4 w-4 flex-none" />
+                <span className="ml-2">{project.link.label}</span>
+              </p>
+            </Card>
+          ))}
+        </ul>
       </Container>
     </>
   );
