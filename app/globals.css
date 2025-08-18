@@ -17,3 +17,46 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
 }
+
+/* Enhanced Focus States for Accessibility */
+*:focus-visible {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Button and interactive element focus states */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+}
+
+/* Form elements */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+  border-color: #ef4444;
+}
+
+/* Custom focus for specific components */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #ef4444;
+}
+
+/* Ensure focus is visible on dark backgrounds */
+@media (prefers-color-scheme: dark) {
+  *:focus-visible {
+    outline-color: #f87171;
+  }
+  
+  button:focus-visible,
+  a:focus-visible,
+  [role="button"]:focus-visible {
+    outline-color: #f87171;
+  }
+}

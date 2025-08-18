@@ -9,7 +9,7 @@ import portraitImage from '@/public/images/portrait.jpg';
 
 export const metadata: Metadata = {
   title: 'About',
-  description: 'Engineering at Gojek.',
+  description: 'Senior Principal Architect at Gojek, building scalable systems and leading engineering teams. Living with ALS while continuing to innovate and mentor.',
 };
 
 export default function About() {
@@ -21,9 +21,9 @@ export default function About() {
             <div className="max-w-xs px-2.5 lg:max-w-none">
               <Image
                 src={portraitImage}
-                alt=""
+                alt="Portrait of Ravi Atluri, Senior Principal Architect at Gojek"
                 sizes="(min-width: 1024px) 32rem, 20rem"
-                className="aspect-square rotate-3 rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
+                className="aspect-square rotate-3 rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800 shadow-lg"
               />
             </div>
           </div>
@@ -32,22 +32,57 @@ export default function About() {
               Ravi Atluri.
             </h1>
             <h2 className="text-2xl font-bold tracking-tight text-zinc-600 dark:text-zinc-200 sm:text-2xl">
-              Engineering at Gojek. Living with ALS.
+              Senior Principal Architect • Technical Leader • Problem Solver
             </h2>
-            <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
-              <p>
-                I&apos;m Ravi, a Senior Principal Architect at Gojek, where I work on building
-                scalable and reliable systems & abstractions for the product engineering teams. I
-                have been{' '}
-                <a
-                  href="https://twitter.com/sonnes/status/1474042833535262725"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-red-500 transition hover:text-red-800 dark:text-red-500 dark:hover:text-red-300"
-                >
-                  living with ALS since 2019.
-                </a>
-              </p>
+            
+            <div className="mt-8 space-y-7 text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-lg p-6 border border-zinc-200 dark:border-zinc-700">
+                <p className="text-lg font-medium text-zinc-800 dark:text-zinc-200 mb-3">
+                  Currently at Gojek, architecting scalable systems that serve millions of users across Southeast Asia.
+                </p>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  Leading product engineering teams to build reliable, high-performance distributed systems.
+                </p>
+              </div>
+              
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-zinc-800 dark:text-zinc-200">Technical Expertise</h3>
+                  <ul className="text-sm space-y-1">
+                    <li>• Distributed Systems Architecture</li>
+                    <li>• Cloud-Native Solutions</li>
+                    <li>• Go, Kafka, Kubernetes</li>
+                    <li>• Team Leadership & Mentoring</li>
+                  </ul>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-zinc-800 dark:text-zinc-200">Impact Areas</h3>
+                  <ul className="text-sm space-y-1">
+                    <li>• Scalable Platform Engineering</li>
+                    <li>• Developer Experience</li>
+                    <li>• Open Source Contributions</li>
+                    <li>• Technical Thought Leadership</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="border-l-4 border-red-500 pl-4 bg-red-50/50 dark:bg-red-900/10 py-3 rounded-r">
+                <p className="font-medium text-zinc-800 dark:text-zinc-200 mb-2">
+                  Living with ALS since 2019
+                </p>
+                <p className="text-sm">
+                  Continuing to innovate and lead while navigating this journey. My experience has deepened my commitment to building accessible technology and mentoring the next generation of engineers.{' '}
+                  <a
+                    href="https://twitter.com/sonnes/status/1474042833535262725"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-medium underline transition-colors"
+                  >
+                    Read more about my story →
+                  </a>
+                </p>
+              </div>
+              
               <Resume />
             </div>
           </div>

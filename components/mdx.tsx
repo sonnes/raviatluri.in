@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
+import { CopyButton } from './copy-button';
+
 type HeadingProps = ComponentPropsWithoutRef<'h1'>;
 type ParagraphProps = ComponentPropsWithoutRef<'p'>;
 type ListProps = ComponentPropsWithoutRef<'ul'>;
@@ -15,14 +17,14 @@ type AnchorProps = ComponentPropsWithoutRef<'a'>;
 type BlockquoteProps = ComponentPropsWithoutRef<'blockquote'>;
 
 const customComponents = {
-  h1: (props: HeadingProps) => <h1 className="text-2xl font-semibold mt-12 mb-3" {...props} />,
-  h2: (props: HeadingProps) => <h2 className="text-xl font-semibold mt-8 mb-3" {...props} />,
-  h3: (props: HeadingProps) => <h3 className="text-lg font-semibold mt-6 mb-3" {...props} />,
-  h4: (props: HeadingProps) => <h4 className="text-base font-semibold mb-3" {...props} />,
-  p: (props: ParagraphProps) => <p className="leading-snug my-4" {...props} />,
-  ol: (props: ListProps) => <ol className="list-decimal pl-5 space-y-2" {...props} />,
-  ul: (props: ListProps) => <ul className="list-disc pl-5 space-y-1" {...props} />,
-  li: (props: ListItemProps) => <li className="pl-1" {...props} />,
+  h1: (props: HeadingProps) => <h1 className="text-2xl font-semibold mt-12 mb-4 text-zinc-900 dark:text-zinc-100 tracking-tight" {...props} />,
+  h2: (props: HeadingProps) => <h2 className="text-xl font-semibold mt-10 mb-4 text-zinc-900 dark:text-zinc-100 tracking-tight" {...props} />,
+  h3: (props: HeadingProps) => <h3 className="text-lg font-semibold mt-8 mb-3 text-zinc-900 dark:text-zinc-100 tracking-tight" {...props} />,
+  h4: (props: HeadingProps) => <h4 className="text-base font-semibold mt-6 mb-3 text-zinc-900 dark:text-zinc-100" {...props} />,
+  p: (props: ParagraphProps) => <p className="leading-7 my-6 text-zinc-700 dark:text-zinc-300" {...props} />,
+  ol: (props: ListProps) => <ol className="list-decimal pl-6 space-y-3 my-6 text-zinc-700 dark:text-zinc-300" {...props} />,
+  ul: (props: ListProps) => <ul className="list-disc pl-6 space-y-2 my-6 text-zinc-700 dark:text-zinc-300" {...props} />,
+  li: (props: ListItemProps) => <li className="pl-2 leading-7" {...props} />,
   em: (props: ComponentPropsWithoutRef<'em'>) => <em className="" {...props} />,
   strong: (props: ComponentPropsWithoutRef<'strong'>) => (
     <strong className="font-semibold" {...props} />
@@ -63,6 +65,7 @@ const customComponents = {
       );
     }
     // Code block
+    const codeString = String(children).replace(/\n$/, '');
     const customStyle = style || {
       margin: '1.5rem 0',
       padding: '1rem',
@@ -71,14 +74,19 @@ const customComponents = {
       lineHeight: '1.5',
     };
     return (
-      <SyntaxHighlighter
-        language={language}
-        style={vscDarkPlus}
-        customStyle={customStyle}
-        {...props}
-      >
-        {String(children).replace(/\n$/, '')}
-      </SyntaxHighlighter>
+      <div className="relative group">
+        <div className="absolute top-3 right-3 z-10">
+          <CopyButton text={codeString} />
+        </div>
+        <SyntaxHighlighter
+          language={language}
+          style={vscDarkPlus}
+          customStyle={customStyle}
+          {...props}
+        >
+          {codeString}
+        </SyntaxHighlighter>
+      </div>
     );
   },
   Table: ({ data }: { data: { headers: string[]; rows: string[][] } }) => (
@@ -103,7 +111,7 @@ const customComponents = {
   ),
   blockquote: (props: BlockquoteProps) => (
     <blockquote
-      className="ml-[0.075em] border-l-3 border-gray-300 pl-4 text-gray-700 dark:border-zinc-600 dark:text-zinc-300"
+      className="ml-2 my-8 border-l-4 border-red-500 pl-6 py-2 bg-red-50/50 dark:bg-red-900/10 text-zinc-700 dark:text-zinc-300 italic font-medium rounded-r"
       {...props}
     />
   ),
