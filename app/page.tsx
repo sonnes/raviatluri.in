@@ -67,7 +67,7 @@ export default async function Home() {
                 <h2 className="text-xl font-bold">Photos</h2>
                 <Link href="/photos" className="text-sm text-zinc-500 hover:text-red-500 dark:hover:text-red-400 transition-colors">
                   View all →
-                </a>
+                </Link>
               </div>
               <Photos />
             </div>
