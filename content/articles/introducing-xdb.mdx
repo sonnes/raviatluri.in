@@ -209,6 +209,21 @@ XDB APIs are designed to be simple, composable, and easy to use. Let's explore t
 
 The core types used to create tuples, edges, and records form the foundation of XDB's data model.
 
+```go
+tuples := []*types.Tuple{
+	types.NewTuple("User", "123", "name", "John Doe"),
+	types.NewTuple("User", "123", "age", 25),
+	types.NewTuple("User", "123", "email", "john.doe@example.com"),
+}
+
+record := types.NewRecord("Post", "123").
+	Set("title", "Hello, World!").
+	Set("content", "This is my first post").
+	Set("created_at", time.Now()).
+	Set("author_id", "123").
+	Set("tags", []string{"xdb", "golang"})
+```
+
 ### Encoding
 
 The encoding APIs provide consistent methods for converting between XDB's data types and various formats. Here's how to use different encoding options:
