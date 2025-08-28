@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 import { Card } from '@/components/card';
 import { Container } from '@/components/container';
 import { LinkIcon } from '@/components/icons';
