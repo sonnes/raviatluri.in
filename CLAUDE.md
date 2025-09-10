@@ -64,14 +64,14 @@ Articles are managed through:
 
 - **Primary Brand**: `text-red-500`, `hover:text-red-500` for links and accents
 - **Text Colors**:
-  - Primary: `text-zinc-800` (dark), `text-zinc-200` (dark mode)
+  - Primary: `text-zinc-800`
   - Secondary: `text-zinc-600` (descriptions), `text-zinc-400` (meta)
   - Muted: `text-zinc-500`
 - **Backgrounds**:
-  - Main: `bg-white`, `dark:bg-zinc-900`
-  - Cards/Hovers: `bg-zinc-50`, `dark:bg-zinc-800`
+  - Main: `bg-white`
+  - Cards/Hovers: `bg-zinc-50`
   - Headers: `bg-white/75` with backdrop blur
-- **Borders**: `border-zinc-200`, `dark:border-zinc-700`
+- **Borders**: `border-zinc-200`
 - **Interactive States**: Use red-500 for hover states on interactive elements
 
 ## Visual Development

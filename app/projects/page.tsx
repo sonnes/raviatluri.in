@@ -79,18 +79,16 @@ export default function Projects() {
     <>
       <Container className="mt-8 sm:mt-16">
         <header className="max-w-4xl pb-10">
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
-            {metadata.title}
-          </h1>
-          <p className="mt-6 text-lg text-zinc-600 dark:text-zinc-400">{metadata.description}</p>
+          <h1 className="text-4xl font-bold tracking-tight text-zinc-800">{metadata.title}</h1>
+          <p className="mt-6 text-lg text-zinc-600">{metadata.description}</p>
           <div className="mt-8 flex flex-wrap gap-2">
-            <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300 rounded-full">
+            <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-red-50 text-red-700 rounded-full">
               Open Source Contributor
             </span>
-            <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-zinc-50 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 rounded-full">
+            <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-zinc-50 text-zinc-700 rounded-full">
               Go Ecosystem
             </span>
-            <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-zinc-50 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 rounded-full">
+            <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-zinc-50 text-zinc-700 rounded-full">
               Production Scale
             </span>
           </div>
@@ -100,7 +98,7 @@ export default function Projects() {
           {projects.map(project => (
             <Card as="li" key={project.name}>
               <div className="flex items-start justify-between mb-3">
-                <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+                <h3 className="text-lg font-semibold text-zinc-800">
                   <Card.Link href={project.link.href}>{project.name}</Card.Link>
                 </h3>
               </div>
@@ -109,21 +107,17 @@ export default function Projects() {
 
               <div className="flex flex-wrap gap-2 mb-3">
                 {project.technologies.slice(0, 3).map(tech => (
-                  <span key={tech} className="text-xs text-zinc-600 dark:text-zinc-400">
+                  <span key={tech} className="text-xs text-zinc-600">
                     {tech}
                   </span>
                 ))}
                 {project.technologies.length > 3 && (
-                  <span className="text-xs text-zinc-500 dark:text-zinc-500">
-                    +{project.technologies.length - 3}
-                  </span>
+                  <span className="text-xs text-zinc-500">+{project.technologies.length - 3}</span>
                 )}
               </div>
 
               {project.impact && (
-                <div className="text-sm text-green-600 dark:text-green-400 mb-4">
-                  {project.impact}
-                </div>
+                <div className="text-sm text-green-600 mb-4">{project.impact}</div>
               )}
 
               <p className="relative z-10 flex text-sm font-medium text-zinc-400 transition group-hover:text-red-500">

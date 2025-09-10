@@ -16,7 +16,7 @@ function AvatarContainer({
     <div
       className={clsx(
         className,
-        'h-10 w-10 rounded-full bg-white/90 p-0.5 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:ring-white/10'
+        'h-10 w-10 rounded-full bg-white/90 p-0.5 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur'
       )}
       {...props}
     />
@@ -26,7 +26,7 @@ function AvatarContainer({
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full">
-      <div className="relative pt-6 z-10 bg-white/75 backdrop-blur-sm dark:bg-zinc-900/75">
+      <div className="relative pt-6 z-10 bg-white/75 backdrop-blur-sm">
         <Container className="py-4">
           <div className="relative flex items-center justify-between md:grid md:grid-cols-3">
             <div className="flex items-center">
@@ -34,7 +34,7 @@ export default function Header() {
                 <Avatar />
               </AvatarContainer>
               {/* <div className="ml-4">
-                <span className="text-2xl font-bold bg-gradient-to-br from-zinc-500 to-zinc-800 dark:from-zinc-100 dark:to-zinc-500 text-transparent bg-clip-text">
+                <span className="text-2xl font-bold bg-gradient-to-br from-zinc-500 to-zinc-800 text-transparent bg-clip-text">
                   Ravi Atluri
                 </span>
               </div> */}

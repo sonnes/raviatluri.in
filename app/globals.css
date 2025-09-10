@@ -48,15 +48,3 @@ select:focus-visible {
   box-shadow: 0 0 0 2px #ef4444;
 }
 
-/* Ensure focus is visible on dark backgrounds */
-@media (prefers-color-scheme: dark) {
-  *:focus-visible {
-    outline-color: #f87171;
-  }
-  
-  button:focus-visible,
-  a:focus-visible,
-  [role="button"]:focus-visible {
-    outline-color: #f87171;
-  }
-}

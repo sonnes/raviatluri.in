@@ -40,9 +40,7 @@ export default async function TagIndex({ params }: { params: Promise<{ slug: str
     <>
       <Container className="mt-8 sm:mt-16">
         <header className="max-w-3xl mb-10">
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
-            {title}
-          </h1>
+          <h1 className="text-4xl font-bold tracking-tight text-zinc-800">{title}</h1>
           <p className="mt-6 text-lg text-zinc-600">{description}</p>
         </header>
         <div className="flex max-w-3xl flex-col space-y-16 border-l border-zinc-200 pl-6">

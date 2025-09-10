@@ -49,7 +49,10 @@ export default async function Home() {
           <div className="md:col-span-2">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-xl font-bold">Recent Articles</h2>
-              <Link href="/articles" className="text-sm text-zinc-500 hover:text-red-500 dark:hover:text-red-400 transition-colors">
+              <Link
+                href="/articles"
+                className="text-sm text-zinc-500 hover:text-red-500 transition-colors"
+              >
                 View all →
               </Link>
             </div>
@@ -65,7 +68,10 @@ export default async function Home() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold">Photos</h2>
-                <Link href="/photos" className="text-sm text-zinc-500 hover:text-red-500 dark:hover:text-red-400 transition-colors">
+                <Link
+                  href="/photos"
+                  className="text-sm text-zinc-500 hover:text-red-500 transition-colors"
+                >
                   View all →
                 </Link>
               </div>

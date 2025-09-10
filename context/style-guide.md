@@ -42,20 +42,16 @@ The website follows a **minimalist design approach** inspired by Stripe and Line
 - **Active/Default**: `text-red-500` - Used for active navigation, links, and primary CTAs only
 - **Hover**: `hover:text-red-500`, `group-hover:text-red-500` - Subtle interactive hover states
 - **Content Links**: `hover:text-red-700` - Stronger emphasis for MDX content links
-- **Dark Mode**: `dark:text-red-400` - Slightly lighter variant for dark backgrounds
 - **Accessibility**: All red combinations meet WCAG AA contrast requirements
 
 #### Neutral Grays (Stone Scale - Warm & Minimalist)
 
 - **Primary Text**:
-  - Light mode: `text-stone-800` - Main body text and headings
-  - Dark mode: `text-stone-100` / `text-stone-200` - Light text on dark backgrounds (varies by context)
+  - `text-stone-800` - Main body text and headings
 - **Secondary Text**:
-  - Light mode: `text-stone-600` - Descriptions, secondary content
-  - Dark mode: `text-stone-400` - Muted text in dark mode
+  - `text-stone-600` - Descriptions, secondary content
 - **Muted Text**:
-  - Universal: `text-stone-500` - Meta information, timestamps, captions
-  - Dark mode: `text-stone-400` / `text-stone-500` - Navigation meta, subtle content
+  - `text-stone-500` - Meta information, timestamps, captions
 
 #### Legacy Gray Usage (Inconsistent - Should be migrated to Stone)
 
@@ -66,21 +62,21 @@ The website follows a **minimalist design approach** inspired by Stripe and Line
 
 #### Main Backgrounds (Clean & Minimalist)
 
-- **Primary**: `bg-white` / `dark:bg-stone-900` - Pure white/off-white main page background
-- **Card/Hover**: `bg-stone-50` / `dark:bg-stone-800` - Subtle card hover states
-- **Code Inline**: `bg-stone-100` / `dark:bg-stone-800` - Minimal inline code backgrounds
+- **Primary**: `bg-white` - Pure white/off-white main page background
+- **Card/Hover**: `bg-stone-50` - Subtle card hover states
+- **Code Inline**: `bg-stone-100` - Minimal inline code backgrounds
 
 #### Glass/Translucent Effects (Subtle Depth)
 
-- **Header/Navigation**: `bg-white/75` / `dark:bg-stone-900/75` - Translucent header background
-- **Navigation Pills**: `bg-white/90` / `dark:bg-stone-800/90` - Navigation containers
-- **Avatar Container**: `bg-white/90` / `dark:bg-stone-800/90` - Avatar background
+- **Header/Navigation**: `bg-white/75` - Translucent header background
+- **Navigation Pills**: `bg-white/90` - Navigation containers
+- **Avatar Container**: `bg-white/90` - Avatar background
 
 #### Borders (Minimal Separation)
 
-- **Light**: `border-stone-200` / `dark:border-stone-700` - General borders, dividers
-- **Subtle**: `border-stone-100` / `dark:border-stone-700/40` - Footer borders
-- **Navigation**: `ring-stone-900/5` / `dark:ring-white/10` - Ring borders on glass elements
+- **Light**: `border-stone-200` - General borders, dividers
+- **Subtle**: `border-stone-100` - Footer borders
+- **Navigation**: `ring-stone-900/5` - Ring borders on glass elements
 
 ## Typography
 
@@ -102,7 +98,7 @@ The website follows a **minimalist design approach** inspired by Stripe and Line
 #### H1 - Page Titles (32-36px equivalent)
 
 ```css
-text-4xl font-semibold tracking-tight text-stone-800 dark:text-stone-100
+text-4xl font-semibold tracking-tight text-stone-800
 /* Usage: Main page titles, hero headings */
 /* Responsive: Can scale to sm:text-5xl on larger screens */
 /* Note: Using font-semibold for cleaner, less heavy appearance */
@@ -111,7 +107,7 @@ text-4xl font-semibold tracking-tight text-stone-800 dark:text-stone-100
 #### H2 - Section Headings (24-28px equivalent)
 
 ```css
-text-xl font-semibold text-stone-800 dark:text-stone-100
+text-xl font-semibold text-stone-800
 /* Usage: Section titles, article list headings */
 /* Note: Consistent font-semibold for hierarchy without heaviness */
 ```
@@ -132,8 +128,8 @@ text-xl font-semibold tracking-tight text-stone-800
 
 ### Body Text (16-18px base size)
 
-- **Primary**: `text-base text-stone-800` / `dark:text-stone-200` - Standard body text
-- **Large Description**: `text-lg text-stone-600` / `dark:text-stone-400` - Page descriptions, introductory content (professional positioning)
+- **Primary**: `text-base text-stone-800` - Standard body text
+- **Large Description**: `text-lg text-stone-600` - Page descriptions, introductory content (professional positioning)
 - **Secondary**: `text-base text-stone-600` - Article descriptions, secondary content
 - **Meta Information**: `text-sm text-stone-400` - Timestamps, tags, captions
 - **Caption Text**: `text-xs italic text-stone-800` - Image captions, very small text (migrated from gray)
@@ -213,7 +209,7 @@ relative z-10  /* Applied to all content elements */
 
 ```css
 /* Desktop navigation */
-flex rounded-full bg-white/90 px-3 text-sm font-medium text-stone-800 shadow-lg shadow-stone-800/5 ring-1 ring-stone-900/5 backdrop-blur dark:bg-stone-800/90 dark:text-stone-200 dark:ring-white/10
+flex rounded-full bg-white/90 px-3 text-sm font-medium text-stone-800 shadow-lg shadow-stone-800/5 ring-1 ring-stone-900/5 backdrop-blur
 
 /* Navigation items */
 relative block px-3 py-2 transition
@@ -222,7 +218,7 @@ relative block px-3 py-2 transition
 ### Avatar Container (Minimalist)
 
 ```css
-h-10 w-10 rounded-full bg-white/90 p-0.5 shadow-lg shadow-stone-800/5 ring-1 ring-stone-900/5 backdrop-blur dark:bg-stone-800/90 dark:ring-white/10
+h-10 w-10 rounded-full bg-white/90 p-0.5 shadow-lg shadow-stone-800/5 ring-1 ring-stone-900/5 backdrop-blur
 ```
 
 ## Interactive Elements
@@ -240,10 +236,10 @@ All interactive elements follow WCAG 2.2 compliance:
 
 ```css
 /* Primary links (MDX content) */
-text-red-500 hover:text-red-700 dark:underline
+text-red-500 hover:text-red-700
 
 /* Navigation links */
-hover:text-red-500 dark:hover:text-red-400
+hover:text-red-500
 
 /* Simple page links */
 hover:text-stone-800 /* Used in homepage "View all" links */
@@ -255,24 +251,24 @@ group-hover:text-red-500 transition-colors duration-200
 text-sm font-medium text-stone-500 group-hover:text-red-500 transition-colors duration-200
 
 /* Footer links */
-transition hover:text-red-500 dark:hover:text-red-400
+transition hover:text-red-500
 ```
 
 ### Active States (Subtle Indicators)
 
 ```css
 /* Active navigation */
-text-red-500 dark:text-red-400
+text-red-500
 
 /* Active indicator line */
-absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-red-500/0 via-red-500/40 to-red-500/0 dark:from-red-400/0 dark:via-red-400/40 dark:to-red-400/0
+absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-red-500/0 via-red-500/40 to-red-500/0
 ```
 
 ### Buttons (Clean & Minimalist)
 
 ```css
 /* Mobile menu button */
-group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-stone-800 shadow-lg shadow-stone-800/5 ring-1 ring-stone-900/5 backdrop-blur dark:bg-stone-800/90 dark:text-stone-200 dark:ring-white/10 dark:hover:ring-white/20
+group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-stone-800 shadow-lg shadow-stone-800/5 ring-1 ring-stone-900/5 backdrop-blur
 ```
 
 ## Visual Effects
@@ -311,9 +307,6 @@ scale-95 opacity-0 transition group-hover:scale-100 group-hover:opacity-100
 /* Light backgrounds */
 ring-1 ring-stone-900/5
 
-/* Dark backgrounds */
-dark:ring-white/10
-dark:hover:ring-white/20
 ```
 
 ## Content Components
@@ -323,7 +316,7 @@ dark:hover:ring-white/20
 #### Inline Code
 
 ```css
-bg-stone-100 dark:bg-stone-800 rounded px-1.5 py-0.5 font-mono text-[0.90em]
+bg-stone-100 rounded px-1.5 py-0.5 font-mono text-[0.90em]
 /* Maintains readability while distinguishing from body text */
 ```
 
@@ -370,7 +363,7 @@ mt-3 text-xs italic text-stone-800
 ### Blockquotes (Minimalist Styling)
 
 ```css
-ml-[0.075em] border-l-3 border-stone-300 pl-4 text-stone-700 dark:border-stone-600 dark:text-stone-300
+ml-[0.075em] border-l-3 border-stone-300 pl-4 text-stone-700
 /* Note: Migrated from gray colors to stone scale for consistency */
 ```
 
@@ -405,10 +398,10 @@ space-y-16
 
 ```css
 /* Mobile popover */
-fixed inset-x-4 top-8 z-50 origin-top rounded-3xl bg-white p-8 ring-1 ring-stone-900/5 dark:bg-stone-900 dark:ring-stone-800
+fixed inset-x-4 top-8 z-50 origin-top rounded-3xl bg-white p-8 ring-1 ring-stone-900/5
 
 /* Mobile backdrop */
-fixed inset-0 z-50 bg-stone-800/40 backdrop-blur-sm dark:bg-black/80
+fixed inset-0 z-50 bg-stone-800/40 backdrop-blur-sm
 ```
 
 ### Responsive Layout Patterns
