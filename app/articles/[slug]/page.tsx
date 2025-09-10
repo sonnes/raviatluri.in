@@ -61,15 +61,15 @@ export default async function Article({ params }: { params: Promise<{ slug: stri
         <div className="mx-auto max-w-2xl">
           <article>
             <header className="flex flex-col">
-              <time dateTime={post.date} className="text-base font-semibold text-zinc-400">
+              <time dateTime={post.date} className="text-base font-semibold text-text-muted">
                 {formatDate(post.date)}
               </time>
-              <h1 className="text-4xl font-bold tracking-tight text-zinc-800">{post.title}</h1>
-              <div className="flex items-center text-base text-zinc-400 my-4">
+              <h1 className="text-4xl font-bold tracking-tight text-text-primary">{post.title}</h1>
+              <div className="flex items-center text-base text-text-muted my-4">
                 {post.tags &&
                   post.tags.map((tag, index) => (
                     <span key={tag} className="pl-1">
-                      <a href={`/tags/${tag}`} className="hover:text-zinc-500">
+                      <a href={`/tags/${tag}`} className="hover:text-text-tertiary">
                         #{tag}
                       </a>
                       {index < post.tags.length - 1 && ', '}
@@ -77,7 +77,7 @@ export default async function Article({ params }: { params: Promise<{ slug: stri
                   ))}
               </div>
             </header>
-            <div className="text-md text-zinc-600">{post.content}</div>
+            <div className="text-md text-text-secondary">{post.content}</div>
           </article>
         </div>
       </Container>

@@ -10,6 +10,29 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-noto-sans);
   --font-mono: var(--font-noto-sans-mono);
+  
+  /* Brand Colors using Tailwind's red palette */
+  --color-primary: var(--color-red-500);
+  --color-primary-50: var(--color-red-50);
+  --color-primary-500: var(--color-red-500);
+  
+  /* Text Colors using Tailwind's zinc palette */
+  --color-text-primary: var(--color-zinc-800);
+  --color-text-secondary: var(--color-zinc-600);  
+  --color-text-tertiary: var(--color-zinc-500);
+  --color-text-muted: var(--color-zinc-400);
+  
+  /* Surface Colors using Tailwind's zinc and white */
+  --color-surface: var(--color-white);
+  --color-surface-50: var(--color-zinc-50);
+  --color-surface-hover: var(--color-zinc-100);
+  
+  /* Border Colors using Tailwind's zinc palette */
+  --color-border: var(--color-zinc-200);
+  --color-border-subtle: oklch(from var(--color-zinc-900) l c h / 0.05);
+  
+  /* Focus States using primary red */
+  --color-focus: var(--color-red-500);
 }
 
 body {
@@ -20,7 +43,7 @@ body {
 
 /* Enhanced Focus States for Accessibility */
 *:focus-visible {
-  outline: 2px solid #ef4444;
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -29,7 +52,7 @@ body {
 button:focus-visible,
 a:focus-visible,
 [role="button"]:focus-visible {
-  outline: 2px solid #ef4444;
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -37,14 +60,14 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid #ef4444;
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
-  border-color: #ef4444;
+  border-color: var(--color-focus);
 }
 
 /* Custom focus for specific components */
 .focus-ring:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px #ef4444;
+  box-shadow: 0 0 0 2px var(--color-focus);
 }
 

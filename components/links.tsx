@@ -18,11 +18,11 @@ export function SocialLink({
     <li className={clsx(className, 'flex')}>
       <Link
         href={href}
-        className="group flex min-h-[44px] min-w-[44px] items-center text-sm font-medium text-zinc-800 transition-colors duration-200 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded-md p-2"
+        className="group flex min-h-[44px] min-w-[44px] items-center text-sm font-medium text-text-primary transition-colors duration-200 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md p-2"
         target={href.startsWith('http') ? '_blank' : undefined}
         rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
       >
-        <Icon className="h-6 w-6 flex-none fill-zinc-500 transition-colors duration-200 group-hover:fill-red-500 group-focus:fill-red-500" />
+        <Icon className="h-6 w-6 flex-none fill-text-tertiary transition-colors duration-200 group-hover:fill-primary group-focus:fill-primary" />
         <span className="ml-4">{children}</span>
       </Link>
     </li>

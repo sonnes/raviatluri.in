@@ -20,8 +20,8 @@ export default async function Abacus({
     return (
       <Container className="mt-8 sm:mt-16">
         <header className="max-w-3xl pb-10">
-          <h1 className="text-4xl font-bold tracking-tight text-red-600">Access Denied</h1>
-          <p className="mt-6 text-lg text-red-600">
+          <h1 className="text-4xl font-bold tracking-tight text-primary">Access Denied</h1>
+          <p className="mt-6 text-lg text-primary">
             Please provide the correct password in the URL parameter to access this page.
           </p>
         </header>
@@ -32,8 +32,8 @@ export default async function Abacus({
   return (
     <Container className="mt-8 sm:mt-16">
       <header className="max-w-3xl pb-10">
-        <h1 className="text-4xl font-bold tracking-tight text-zinc-800">{metadata.title}</h1>
-        <p className="mt-6 text-lg text-zinc-600">{metadata.description}</p>
+        <h1 className="text-4xl font-bold tracking-tight text-text-primary">{metadata.title}</h1>
+        <p className="mt-6 text-lg text-text-secondary">{metadata.description}</p>
       </header>
       <div className="space-y-20">
         <AbacusProvider>

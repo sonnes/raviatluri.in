@@ -84,23 +84,23 @@ export default function UploadForm({ password }: { password: string }) {
   return (
     <div className="max-w-2xl mx-auto p-6">
       <div className="col-span-full">
-        <label htmlFor="cover-photo" className="block text-sm/6 font-medium text-gray-900">
+        <label htmlFor="cover-photo" className="block text-sm/6 font-medium text-text-primary">
           Upload Page
         </label>
         <div
-          className={`mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 ${
-            isDragging ? 'border-indigo-600 bg-indigo-50' : ''
+          className={`mt-2 flex justify-center rounded-lg border border-dashed border-border px-6 py-10 ${
+            isDragging ? 'border-primary bg-primary-50' : ''
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         >
           <div className="text-center">
-            <ImageIcon className="mx-auto size-12 text-gray-300" />
-            <div className="mt-4 flex text-sm/6 text-gray-600">
+            <ImageIcon className="mx-auto size-12 text-text-muted" />
+            <div className="mt-4 flex text-sm/6 text-text-secondary">
               <label
                 htmlFor="file-upload"
-                className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                className="relative cursor-pointer rounded-md bg-surface font-semibold text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 hover:text-primary"
               >
                 <span>Upload a file</span>
                 <input
@@ -115,18 +115,18 @@ export default function UploadForm({ password }: { password: string }) {
               </label>
               <p className="pl-1">or drag and drop</p>
             </div>
-            <p className="text-xs/5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
+            <p className="text-xs/5 text-text-secondary">PNG, JPG, GIF up to 10MB</p>
           </div>
         </div>
       </div>
       {uploadStatus && (
         <div className="mt-4 text-lg font-bold">
           {uploadStatus === 'error' ? (
-            <div className="text-red-600">Error uploading file</div>
+            <div className="text-primary">Error uploading file</div>
           ) : uploadStatus === 'compressing' ? (
-            <div className="text-gray-600">Compressing...</div>
+            <div className="text-text-secondary">Compressing...</div>
           ) : uploadStatus === 'uploading' ? (
-            <div className="text-gray-600">Generating...</div>
+            <div className="text-text-secondary">Generating...</div>
           ) : uploadStatus === 'success' ? (
             <div className="text-green-600">Worksheet ready!</div>
           ) : null}

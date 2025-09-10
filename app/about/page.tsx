@@ -29,16 +29,16 @@ export default function About() {
             </div>
           </div>
           <div className="lg:order-first lg:row-span-2">
-            <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl">
+            <h1 className="text-4xl font-bold tracking-tight text-text-primary sm:text-5xl">
               Ravi Atluri.
             </h1>
-            <h2 className="text-2xl font-bold tracking-tight text-zinc-600 sm:text-2xl">
+            <h2 className="text-2xl font-bold tracking-tight text-text-secondary sm:text-2xl">
               Senior Principal Architect • Technical Leader • Problem Solver
             </h2>
 
-            <div className="mt-8 space-y-7 text-base text-zinc-600 leading-relaxed">
+            <div className="mt-8 space-y-7 text-base text-text-secondary leading-relaxed">
               <div className="">
-                <p className="text-lg font-medium text-zinc-800 mb-3">
+                <p className="text-lg font-medium text-text-primary mb-3">
                   Currently at Gojek, architecting scalable systems that serve millions of users
                   across Southeast Asia.
                 </p>
@@ -47,8 +47,8 @@ export default function About() {
                   systems.
                 </p>
               </div>
-              <div className="border-l-4 border-red-500 pl-4 bg-red-50/50 py-3 rounded-r">
-                <p className="font-medium text-zinc-800 mb-2">Living with ALS since 2019</p>
+              <div className="border-l-4 border-primary pl-4 bg-primary-50/50 py-3 rounded-r">
+                <p className="font-medium text-text-primary mb-2">Living with ALS since 2019</p>
                 <p className="text-sm">
                   Continuing to innovate and lead while navigating this journey. My experience has
                   deepened my commitment to building accessible technology and mentoring the next
@@ -57,7 +57,7 @@ export default function About() {
                     href="https://twitter.com/sonnes/status/1474042833535262725"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-red-600 hover:text-red-700 font-medium underline transition-colors"
+                    className="text-primary hover:text-primary font-medium underline transition-colors"
                   >
                     Read more about my story →
                   </a>

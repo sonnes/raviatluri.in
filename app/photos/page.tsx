@@ -14,15 +14,15 @@ export default function Photos() {
     <>
       <Container className="mt-8 sm:mt-16">
         <header className="max-w-3xl pb-10">
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-800">{metadata.title}</h1>
-          <p className="mt-6 text-lg text-zinc-600">{metadata.description}</p>
+          <h1 className="text-4xl font-bold tracking-tight text-text-primary">{metadata.title}</h1>
+          <p className="mt-6 text-lg text-text-secondary">{metadata.description}</p>
         </header>
 
         {photos.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="h-16 w-16 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+            <div className="h-16 w-16 rounded-full bg-surface-50 flex items-center justify-center mb-6">
               <svg
-                className="h-8 w-8 text-zinc-400"
+                className="h-8 w-8 text-text-muted"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
@@ -35,8 +35,8 @@ export default function Photos() {
                 />
               </svg>
             </div>
-            <h2 className="text-lg font-semibold text-zinc-800 mb-2">No photos yet</h2>
-            <p className="text-sm text-zinc-500 max-w-md">
+            <h2 className="text-lg font-semibold text-text-primary mb-2">No photos yet</h2>
+            <p className="text-sm text-text-tertiary max-w-md">
               Photos will be added soon. Check back later to see landscapes, portraits, and other
               captures from my adventures.
             </p>
@@ -46,7 +46,7 @@ export default function Photos() {
             {photos.map((image, imageIndex) => (
               <div
                 key={imageIndex}
-                className="group relative aspect-[4/3] flex-none overflow-hidden rounded-xl bg-zinc-100 transition-transform duration-300 hover:scale-105"
+                className="group relative aspect-[4/3] flex-none overflow-hidden rounded-xl bg-surface-50 transition-transform duration-300 hover:scale-105"
               >
                 <Image
                   src={image.src}

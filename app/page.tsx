@@ -16,7 +16,7 @@ export default async function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
           <div>
             <h1 className="text-4xl font-bold mb-4">Ravi Atluri</h1>
-            <p className="text-zinc-600">
+            <p className="text-text-secondary">
               Sr. Principal Architect at Gojek. Working on scalable and reliable systems &
               abstractions for product engineering teams.
             </p>
@@ -51,12 +51,12 @@ export default async function Home() {
               <h2 className="text-xl font-bold">Recent Articles</h2>
               <Link
                 href="/articles"
-                className="text-sm text-zinc-500 hover:text-red-500 transition-colors"
+                className="text-sm text-text-tertiary hover:text-primary transition-colors"
               >
                 View all →
               </Link>
             </div>
-            <div className="space-y-12 border-l border-zinc-200 pl-6">
+            <div className="space-y-12 border-l border-border pl-6">
               {articles.slice(0, 5).map(article => (
                 <ArticleCard key={article.slug} article={article} />
               ))}
@@ -70,7 +70,7 @@ export default async function Home() {
                 <h2 className="text-xl font-bold">Photos</h2>
                 <Link
                   href="/photos"
-                  className="text-sm text-zinc-500 hover:text-red-500 transition-colors"
+                  className="text-sm text-text-tertiary hover:text-primary transition-colors"
                 >
                   View all →
                 </Link>

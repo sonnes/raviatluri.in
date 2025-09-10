@@ -18,23 +18,23 @@ type BlockquoteProps = ComponentPropsWithoutRef<'blockquote'>;
 
 const customComponents = {
   h1: (props: HeadingProps) => (
-    <h1 className="text-2xl font-semibold mt-12 mb-4 text-zinc-900 tracking-tight" {...props} />
+    <h1 className="text-2xl font-semibold mt-12 mb-4 text-text-primary tracking-tight" {...props} />
   ),
   h2: (props: HeadingProps) => (
-    <h2 className="text-xl font-semibold mt-10 mb-4 text-zinc-900 tracking-tight" {...props} />
+    <h2 className="text-xl font-semibold mt-10 mb-4 text-text-primary tracking-tight" {...props} />
   ),
   h3: (props: HeadingProps) => (
-    <h3 className="text-lg font-semibold mt-8 mb-3 text-zinc-900 tracking-tight" {...props} />
+    <h3 className="text-lg font-semibold mt-8 mb-3 text-text-primary tracking-tight" {...props} />
   ),
   h4: (props: HeadingProps) => (
-    <h4 className="text-base font-semibold mt-6 mb-3 text-zinc-900" {...props} />
+    <h4 className="text-base font-semibold mt-6 mb-3 text-text-primary" {...props} />
   ),
-  p: (props: ParagraphProps) => <p className="leading-7 my-6 text-zinc-700" {...props} />,
+  p: (props: ParagraphProps) => <p className="leading-7 my-6 text-text-secondary" {...props} />,
   ol: (props: ListProps) => (
-    <ol className="list-decimal pl-6 space-y-3 my-6 text-zinc-700" {...props} />
+    <ol className="list-decimal pl-6 space-y-3 my-6 text-text-secondary" {...props} />
   ),
   ul: (props: ListProps) => (
-    <ul className="list-disc pl-6 space-y-2 my-6 text-zinc-700" {...props} />
+    <ul className="list-disc pl-6 space-y-2 my-6 text-text-secondary" {...props} />
   ),
   li: (props: ListItemProps) => <li className="pl-2 leading-7" {...props} />,
   em: (props: ComponentPropsWithoutRef<'em'>) => <em className="" {...props} />,
@@ -42,7 +42,7 @@ const customComponents = {
     <strong className="font-semibold" {...props} />
   ),
   a: ({ href, children, ...props }: AnchorProps) => {
-    const className = 'text-red-500 hover:text-red-700';
+    const className = 'text-primary hover:text-primary';
     if (href?.startsWith('/')) {
       return (
         <Link href={href} className={className} {...props}>
@@ -68,7 +68,7 @@ const customComponents = {
     // Inline code: no className
     if (!className) {
       return (
-        <code className="bg-zinc-100 rounded px-1.5 py-0.5 font-mono text-[0.90em]" {...props}>
+        <code className="bg-surface-50 rounded px-1.5 py-0.5 font-mono text-[0.90em]" {...props}>
           {children}
         </code>
       );
@@ -120,7 +120,7 @@ const customComponents = {
   ),
   blockquote: (props: BlockquoteProps) => (
     <blockquote
-      className="ml-2 my-8 border-l-4 border-red-500 pl-6 py-2 bg-red-50/50 text-zinc-700 italic font-medium rounded-r"
+      className="ml-2 my-8 border-l-4 border-primary pl-6 py-2 bg-primary-50/50 text-text-secondary italic font-medium rounded-r"
       {...props}
     />
   ),
@@ -155,7 +155,7 @@ const customComponents = {
             {...rest}
           />
         </div>
-        <div className="mt-2 text-xs italic text-gray-800">{props.alt}</div>
+        <div className="mt-2 text-xs italic text-text-primary">{props.alt}</div>
       </div>
     );
   },
@@ -165,7 +165,7 @@ const customComponents = {
     return (
       <div className="grid grid-cols-1 justify-items-center mt-4 mb-8">
         <video className="rounded-lg" src={src} {...rest} />
-        <div className="text-xs italic text-gray-800">{alt}</div>
+        <div className="text-xs italic text-text-primary">{alt}</div>
       </div>
     );
   },
