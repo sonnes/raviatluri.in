@@ -59,11 +59,11 @@ XDB was inspired by Dgraph's [Mutation API](https://github.com/hypermodeinc/dgo/
 
 ## Data Model
 
-XDB is built around three core types - **Tuple**, **Edge**, and **Record**.
+XDB is built around a fundamental building block - **Tuple**
 
 ### Tuple
 
-A **Tuple** combines a kind, id, attribute name, value, and optional metadata.
+A **Tuple** combines a id, attribute, value, and optional metadata.
 
 <Image src="/images/introducing-xdb/tuple.png" alt="Tuple" />
 
@@ -72,16 +72,16 @@ This simple yet powerful structure can represent any domain model and is easily 
 Here's how to create a tuple:
 
 ```go
-tuple := xdb.NewTuple("Post", "9bsv0s5ocl6002kdg0fg", "title", "Hello World")
+tuple := xdb.NewTuple("9bsv0s5ocl6002kdg0fg", "title", "Hello World")
 ```
 
 ### Edge
 
-An **Edge** is a special kind of tuple whose value is a reference. Edges are unidirectional and represent relationships between records.
+An **Edge** is a special kind of tuple whose value is a reference. Edges are unidirectional and represent relationships between entities.
 
 ### Record
 
-A **Record** is a collection of tuples that share the same kind and id. Records are similar to objects, structs, or rows in a database.
+A **Record** is a collection of tuples that share the same id. Records are similar to objects, structs, or rows in a database. Records represent entities in the domain model.
 
 Here's how to create a record with tuples:
 
@@ -210,17 +210,18 @@ XDB APIs are designed to be simple, composable, and easy to use. Let's explore t
 The core types used to create tuples, edges, and records form the foundation of XDB's data model.
 
 ```go
+userID := xdb.NewID("User", "123")
 tuples := []*types.Tuple{
-	types.NewTuple("User", "123", "name", "John Doe"),
-	types.NewTuple("User", "123", "age", 25),
-	types.NewTuple("User", "123", "email", "john.doe@example.com"),
+	types.NewTuple(userID, "name", "John Doe"),
+	types.NewTuple(userID, "age", 25),
+	types.NewTuple(userID, "email", "john.doe@example.com"),
 }
 
 record := types.NewRecord("Post", "123").
 	Set("title", "Hello, World!").
 	Set("content", "This is my first post").
 	Set("created_at", time.Now()).
-	Set("author_id", "123").
+	Set("author_id", userID).
 	Set("tags", []string{"xdb", "golang"})
 ```
 
@@ -263,12 +264,12 @@ Drivers serve as the bridge between XDB's tuple-based model and specific databas
 
 ```go
 type RecordReader interface {
-	GetRecords(ctx context.Context, keys []xdb.Key) ([]*xdb.Record, []*xdb.Key, error)
+	GetRecords(ctx context.Context, keys []*xdb.Key) ([]*xdb.Record, []*xdb.Key, error)
 }
 
 type RecordWriter interface {
 	PutRecords(ctx context.Context, records []*xdb.Record) error
-	DeleteRecords(ctx context.Context, keys []xdb.Key) error
+	DeleteRecords(ctx context.Context, keys []*xdb.Key) error
 }
 ```
 
@@ -321,11 +322,3 @@ func (s *CachedRecordStore) DeleteRecords(ctx context.Context, keys []xdb.Key) e
 ```
 
 Store implementations also satisfy the capability interfaces they implement. This allows you to use a store as a driver or to layer & compose stores & drivers for more complex use-cases.
-
-### Schema
-
-The Schema APIs provide a database-agnostic way to define and manage your application's domain models. These APIs enable:
-
-- Runtime type checking and constraint enforcement
-- Generation of database-specific schemas
-- Migration management
