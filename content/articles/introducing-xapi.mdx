@@ -1,0 +1,183 @@
+---
+author: Ravi Atluri
+date: 2025-10-15
+title: Introducing xapi - Type-Safe HTTP APIs in Go
+description: xapi is a lightweight Go library that brings type safety and simplicity to building HTTP APIs. It reduces boilerplate with generics, middleware, and optional capabilities.
+tags:
+  - http
+  - golang
+  - xtools
+---
+
+Building HTTP APIs with Go's standard library means writing the same pattern repeatedly:
+
+```go
+func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
+    var req CreateUserRequest
+    if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+        http.Error(w, "Invalid request", http.StatusBadRequest)
+        return
+    }
+    defer r.Body.Close()
+
+    // Extract additional data from request
+    req.Language = r.Header.Get("Language")
+
+    // Validate the request
+    err := req.Validate()
+   if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+   }
+
+    // Call the business logic
+    user, err := createUser(r.Context(), &req)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    // Encode and write response
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusCreated)
+    json.NewEncoder(w).Encode(user)
+}
+```
+
+Your typical handler ends up being 30+ lines where only 3 lines are actual business logic.
+
+Here's the thing: most of this repetition can be abstracted away.
+
+## xapi
+
+[**xapi**](https://pkg.go.dev/github.com/gojekfarm/xtools/xapi) ([GitHub](https://github.com/gojekfarm/xtools/tree/main/xapi)) uses Go generics to turn HTTP handlers into typed functions. Your endpoint becomes: request type goes in, response type comes out. The repetition is taken care of, while still giving you the flexibility to customize the behavior.
+
+This lightweight framework centers around a few ideas:
+
+- **Typed endpoints** that handle JSON decoding, validation, and encoding
+- **Optional interfaces** for extraction, validation, status codes, and custom responses
+- **Standard middleware** support without any special wrappers
+
+## What It Looks Like
+
+Here's the same user creation endpoint, but with xapi:
+
+```go
+type CreateUserRequest struct {
+    Name  string `json:"name"`
+    Email string `json:"email"`
+}
+
+func (req *CreateUserRequest) Validate() error {
+    if req.Name == "" || req.Email == "" {
+        return fmt.Errorf("name and email required")
+    }
+    return nil
+}
+
+type CreateUserResponse struct {
+    ID    int    `json:"id"`
+    Name  string `json:"name"`
+    Email string `json:"email"`
+}
+
+func (res *CreateUserResponse) StatusCode() int {
+    return http.StatusCreated
+}
+
+handler := xapi.EndpointFunc[CreateUserRequest, CreateUserResponse](
+    func(ctx context.Context, req *CreateUserRequest) (*CreateUserResponse, error) {
+        return &CreateUserResponse{
+            ID:    1,
+            Name:  req.Name,
+            Email: req.Email,
+        }, nil
+    },
+)
+
+http.Handle("/users", xapi.NewEndpoint(handler).Handler())
+```
+
+Your handler is a function from request to response just like a typical service or controller layer. **xapi** eliminates the HTTP handler layer.
+
+## The Optional Interfaces
+
+**xapi** defines four optional interfaces. Implement them on request and response types only when needed.
+
+**Validator** runs after JSON decoding. You can even use any validation library here:
+
+```go
+func (req *CreateUserRequest) Validate() error {
+    if req.Name == "" {
+        return fmt.Errorf("name required")
+    }
+    return nil
+}
+```
+
+**Extracter** pulls data from the HTTP request that isn't in the JSON body, like HTTP headers, route path params, query strings:
+
+```go
+func (req *GetArticleRequest) Extract(r *http.Request) error {
+    req.ID = r.PathValue("id")
+    return nil
+}
+```
+
+**StatusSetter** controls the HTTP status code. Default is 200, but you can override it:
+
+```go
+func (res *CreateUserResponse) StatusCode() int {
+    return http.StatusCreated
+}
+```
+
+**RawWriter** lets you bypass JSON encoding entirely. Use it for HTML or binary responses:
+
+```go
+func (res *ArticleResponse) Write(w http.ResponseWriter) error {
+    w.Header().Set("Content-Type", "text/html")
+    fmt.Fprintf(w, "<h1>%s</h1>", res.Title)
+    return nil
+}
+```
+
+## Middleware
+
+Middleware works exactly like standard `http.Handler` middleware. Any middleware you're already using will work:
+
+```go
+endpoint := xapi.NewEndpoint(
+    handler,
+    xapi.WithMiddleware(
+        xapi.MiddlewareFunc(rateLimitMiddleware),
+        xapi.MiddlewareFunc(authMiddleware),
+    ),
+)
+```
+
+Stack them in the order you need. They wrap the endpoint cleanly, keeping auth, logging, and metrics separate from your business logic.
+
+## Error Handling
+
+Default behavior is a 500 with the error text. You can customize this:
+
+```go
+errorHandler := xapi.ErrorFunc(func(w http.ResponseWriter, err error) {
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusInternalServerError)
+    json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+})
+
+endpoint := xapi.NewEndpoint(handler, xapi.WithErrorHandler(errorHandler))
+```
+
+This allows proper error handling, letting you customize the error response, distinguish validation errors from auth failures, map them to appropriate status codes, and format them consistently.
+
+## Why This Works
+
+Most HTTP handlers follow the same pattern. **xapi** codifies that pattern using generics, so you write less but get more type safety. Your request and response types define the API contract. The optional interfaces give you escape hatches when you need them.
+
+The result: handlers that are mostly business logic, with HTTP operations abstracted away into a lightweight framework. You can use it with your existing HTTP router and server, keeping all existing middlewares and error handling.
+
+If you're tired of writing the same HTTP plumbing in every endpoint, [**xapi**](https://github.com/gojekfarm/xtools/tree/main/xapi) might help.
