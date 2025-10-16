@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Noto_Sans, Noto_Sans_Mono } from 'next/font/google';
 
-import { Analytics } from '@vercel/analytics/react';
 import clsx from 'clsx';
 
 import Footer from '@/components/footer';
@@ -69,7 +68,13 @@ export default function RootLayout({
 }>) {
   return (
     <html className="h-full" lang="en">
-      <head />
+      <head>
+        <script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="96a762db-9ab3-4972-9abd-bdb4707cd029"
+        ></script>
+      </head>
       <body
         className={clsx(
           'flex h-full min-h-screen flex-col bg-white',
@@ -81,7 +86,6 @@ export default function RootLayout({
         <Header />
         <main>{children}</main>
         <Footer />
-        <Analytics />
       </body>
     </html>
   );
