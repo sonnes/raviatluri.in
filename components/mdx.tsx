@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { twMerge } from 'tailwind-merge';
 
 import { CopyButton } from './copy-button';
 
@@ -17,32 +18,65 @@ type AnchorProps = ComponentPropsWithoutRef<'a'>;
 type BlockquoteProps = ComponentPropsWithoutRef<'blockquote'>;
 
 const customComponents = {
-  h1: (props: HeadingProps) => (
-    <h1 className="text-2xl font-semibold mt-12 mb-4 text-text-primary tracking-tight" {...props} />
+  h1: ({ className, ...props }: HeadingProps) => (
+    <h1
+      className={twMerge(
+        'text-2xl font-semibold mt-12 mb-4 text-text-primary tracking-tight',
+        className
+      )}
+      {...props}
+    />
   ),
-  h2: (props: HeadingProps) => (
-    <h2 className="text-xl font-semibold mt-10 mb-4 text-text-primary tracking-tight" {...props} />
+  h2: ({ className, ...props }: HeadingProps) => (
+    <h2
+      className={twMerge(
+        'text-xl font-semibold mt-10 mb-4 text-text-primary tracking-tight',
+        className
+      )}
+      {...props}
+    />
   ),
-  h3: (props: HeadingProps) => (
-    <h3 className="text-lg font-semibold mt-8 mb-3 text-text-primary tracking-tight" {...props} />
+  h3: ({ className, ...props }: HeadingProps) => (
+    <h3
+      className={twMerge(
+        'text-lg font-semibold mt-8 mb-3 text-text-primary tracking-tight',
+        className
+      )}
+      {...props}
+    />
   ),
-  h4: (props: HeadingProps) => (
-    <h4 className="text-base font-semibold mt-6 mb-3 text-text-primary" {...props} />
+  h4: ({ className, ...props }: HeadingProps) => (
+    <h4
+      className={twMerge('text-base font-semibold mt-6 mb-3 text-text-primary', className)}
+      {...props}
+    />
   ),
-  p: (props: ParagraphProps) => <p className="leading-7 my-6 text-text-secondary" {...props} />,
-  ol: (props: ListProps) => (
-    <ol className="list-decimal pl-6 space-y-3 my-6 text-text-secondary" {...props} />
+  p: ({ className, ...props }: ParagraphProps) => (
+    <p className={twMerge('leading-7 my-6 text-text-secondary', className)} {...props} />
   ),
-  ul: (props: ListProps) => (
-    <ul className="list-disc pl-6 space-y-2 my-6 text-text-secondary" {...props} />
+  ol: ({ className, ...props }: ListProps) => (
+    <ol
+      className={twMerge('list-decimal pl-6 space-y-3 my-6 text-text-secondary', className)}
+      {...props}
+    />
   ),
-  li: (props: ListItemProps) => <li className="pl-2 leading-7" {...props} />,
-  em: (props: ComponentPropsWithoutRef<'em'>) => <em className="" {...props} />,
-  strong: (props: ComponentPropsWithoutRef<'strong'>) => (
-    <strong className="font-semibold" {...props} />
+  ul: ({ className, ...props }: ListProps) => (
+    <ul
+      className={twMerge('list-disc pl-6 space-y-2 my-6 text-text-secondary', className)}
+      {...props}
+    />
+  ),
+  li: ({ className, ...props }: ListItemProps) => (
+    <li className={twMerge('pl-2 leading-7', className)} {...props} />
+  ),
+  em: ({ className, ...props }: ComponentPropsWithoutRef<'em'>) => (
+    <em className={twMerge('', className)} {...props} />
+  ),
+  strong: ({ className, ...props }: ComponentPropsWithoutRef<'strong'>) => (
+    <strong className={twMerge('font-semibold', className)} {...props} />
   ),
   a: ({ href, children, ...props }: AnchorProps) => {
-    const className = 'text-primary hover:text-primary';
+    const className = twMerge('text-primary hover:text-primary', props.className);
     if (href?.startsWith('/')) {
       return (
         <Link href={href} className={className} {...props}>
@@ -118,13 +152,16 @@ const customComponents = {
       </tbody>
     </table>
   ),
-  blockquote: (props: BlockquoteProps) => (
+  blockquote: ({ className, ...props }: BlockquoteProps) => (
     <blockquote
-      className="ml-2 my-8 border-l-4 border-primary pl-6 py-2 bg-primary-50/50 text-text-secondary italic font-medium rounded-r"
+      className={twMerge(
+        'ml-2 my-8 border-l-4 border-primary pl-6 py-2 bg-primary-50/50 text-text-secondary italic font-medium rounded-r',
+        className
+      )}
       {...props}
     />
   ),
-  img: (props: ComponentPropsWithoutRef<'img'>) => {
+  img: ({ className, ...props }: ComponentPropsWithoutRef<'img'>) => {
     const { width = 800, height = 600, alt = '', src, ...rest } = props;
     if (!src) return null;
     return (
@@ -133,13 +170,13 @@ const customComponents = {
         width={Number(width)}
         height={Number(height)}
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        className="rounded-lg"
+        className={twMerge('rounded-lg', className)}
         alt={alt}
         {...rest}
       />
     );
   },
-  Image: (props: React.ComponentProps<typeof Image>) => {
+  Image: ({ className, ...props }: React.ComponentProps<typeof Image>) => {
     const { alt = '', src, ...rest } = props;
     if (!src) return null;
     return (
@@ -150,7 +187,7 @@ const customComponents = {
             width={800}
             height={600}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="rounded-lg shadow-sm"
+            className={twMerge('rounded-lg shadow-sm', className)}
             alt={alt}
             {...rest}
           />
@@ -159,16 +196,28 @@ const customComponents = {
       </div>
     );
   },
-  Video: (props: ComponentPropsWithoutRef<'video'> & { alt: string }) => {
+  Video: ({ className, ...props }: ComponentPropsWithoutRef<'video'> & { alt: string }) => {
     const { alt = '', src, ...rest } = props;
     if (!src) return null;
     return (
       <div className="grid grid-cols-1 justify-items-center mt-4 mb-8">
-        <video className="rounded-lg" src={src} {...rest} />
+        <video className={twMerge('rounded-lg', className)} src={src} {...rest} />
         <div className="text-xs italic text-text-primary">{alt}</div>
       </div>
     );
   },
+  div: ({ className, ...props }: ComponentPropsWithoutRef<'div'>) => (
+    <div className={twMerge('', className)} {...props} />
+  ),
+  span: ({ className, ...props }: ComponentPropsWithoutRef<'span'>) => (
+    <span className={twMerge('', className)} {...props} />
+  ),
+  br: ({ className, ...props }: ComponentPropsWithoutRef<'br'>) => (
+    <br className={twMerge('', className)} {...props} />
+  ),
+  hr: ({ className, ...props }: ComponentPropsWithoutRef<'hr'>) => (
+    <hr className={twMerge('', className)} {...props} />
+  ),
 };
 
 export function CustomMDX(props: MDXRemoteProps) {
