@@ -163,7 +163,7 @@ const customComponents = {
   ),
   img: ({ className, ...props }: ComponentPropsWithoutRef<'img'>) => {
     const { width = 800, height = 600, alt = '', src, ...rest } = props;
-    if (!src) return null;
+    if (!src || typeof src !== 'string') return null;
     return (
       <Image
         src={src}
