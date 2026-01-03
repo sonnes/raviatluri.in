@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { RssIcon } from '@/components/icons';
 import navigation from '@/content/navigation';
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -19,12 +20,20 @@ export default function Footer() {
             <div className="mx-auto max-w-2xl lg:max-w-5xl">
               <div className="border-t border-border pb-16 pt-10">
                 <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-                  <div className="flex gap-6 text-sm font-medium text-text-primary">
+                  <div className="flex items-center gap-6 text-sm font-medium text-text-primary">
                     {navigation.map(item => (
                       <NavLink key={item.href} href={item.href}>
                         {item.name}
                       </NavLink>
                     ))}
+                    <Link
+                      href="/rss.xml"
+                      className="group flex items-center gap-1 text-text-muted transition hover:text-primary"
+                      title="RSS Feed"
+                    >
+                      <RssIcon className="h-4 w-4 fill-current" />
+                      <span>RSS</span>
+                    </Link>
                   </div>
                   <p className="text-sm text-text-muted">
                     &copy; {new Date().getFullYear()} Ravi Atluri. All rights reserved.

@@ -59,6 +59,11 @@ export const metadata: Metadata = {
   icons: {
     shortcut: '/favicon.ico',
   },
+  alternates: {
+    types: {
+      'application/rss+xml': 'https://raviatluri.in/rss.xml',
+    },
+  },
 };
 
 export default function RootLayout({

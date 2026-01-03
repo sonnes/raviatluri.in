@@ -376,3 +376,11 @@ export function BriefcaseIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export function RssIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
+      <path d="M5.636 18.364a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 11.757a1 1 0 0 1 1-1 7.243 7.243 0 0 1 7.243 7.243 1 1 0 1 1-2 0A5.243 5.243 0 0 0 4 12.757a1 1 0 0 1-1-1ZM3 6.343a1 1 0 0 1 1-1c7.18 0 13 5.82 13 13a1 1 0 1 1-2 0c0-6.075-4.925-11-11-11a1 1 0 0 1-1-1Z" />
+    </svg>
+  );
+}
