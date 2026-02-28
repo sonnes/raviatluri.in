@@ -11,7 +11,10 @@
       "mcp__playwright__browser_console_messages",
       "Bash(git checkout:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(mkdir:*)",
+      "Bash(curl:*)",
+      "Bash(xmllint:*)"
     ],
     "defaultMode": "acceptEdits"
   }

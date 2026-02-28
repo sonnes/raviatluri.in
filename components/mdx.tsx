@@ -9,6 +9,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { twMerge } from 'tailwind-merge';
 
 import { CopyButton } from './copy-button';
+import { Lightbox } from './lightbox';
 
 type HeadingProps = ComponentPropsWithoutRef<'h1'>;
 type ParagraphProps = ComponentPropsWithoutRef<'p'>;
@@ -181,7 +182,7 @@ const customComponents = {
     if (!src) return null;
     return (
       <div className="grid grid-cols-1 justify-items-center mt-4 mb-8">
-        <div>
+        <Lightbox src={typeof src === 'string' ? src : ''} alt={alt}>
           <Image
             src={src}
             width={800}
@@ -191,7 +192,7 @@ const customComponents = {
             alt={alt}
             {...rest}
           />
-        </div>
+        </Lightbox>
         <div className="mt-2 text-xs italic text-text-primary">{props.alt}</div>
       </div>
     );
