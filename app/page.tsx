@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 import ArticleCard from '@/components/article';
@@ -6,13 +7,14 @@ import { GitHubIcon, InstagramIcon, LinkedInIcon, TwitterIcon } from '@/componen
 import { SocialLink } from '@/components/links';
 import Photos from '@/components/photos';
 import { getAllArticles } from '@/content/articles';
+import photos from '@/content/photos';
 
 export default async function Home() {
   const articles = await getAllArticles();
 
   return (
     <>
-      <Container className="mt-9">
+      <Container className="mt-8 sm:mt-14">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
           <div>
             <h1 className="text-4xl font-bold mb-4">Ravi Atluri</h1>

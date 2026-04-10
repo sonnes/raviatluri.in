@@ -40,7 +40,7 @@ export default function Life() {
 
   return (
     <>
-      <Container className="mt-8 sm:mt-16">
+      <Container className="mt-8 sm:mt-14">
         <header className="max-w-4xl">
           <h1 className="text-4xl font-bold tracking-tight text-text-primary">Life</h1>
           <p className="mt-6 text-lg text-text-secondary">

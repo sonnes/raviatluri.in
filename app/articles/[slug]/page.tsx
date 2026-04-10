@@ -57,7 +57,7 @@ export default async function Article({ params }: { params: Promise<{ slug: stri
 
   return (
     <>
-      <Container className="mt-8 lg:mt-16">
+      <Container className="mt-8 sm:mt-14">
         <div className="mx-auto max-w-2xl">
           <article>
             <header className="flex flex-col">

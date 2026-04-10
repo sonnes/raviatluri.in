@@ -38,7 +38,7 @@ export default async function TagIndex({ params }: { params: Promise<{ slug: str
 
   return (
     <>
-      <Container className="mt-8 sm:mt-16">
+      <Container className="mt-8 sm:mt-14">
         <header className="max-w-3xl mb-10">
           <h1 className="text-4xl font-bold tracking-tight text-text-primary">{title}</h1>
           <p className="mt-6 text-lg text-text-secondary">{description}</p>

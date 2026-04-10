@@ -71,3 +71,12 @@ select:focus-visible {
   box-shadow: 0 0 0 2px var(--color-focus);
 }
 
+
+/* Hide scrollbar for horizontal chip scrollers */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

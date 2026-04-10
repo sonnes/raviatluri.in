@@ -18,7 +18,7 @@ export default async function Abacus({
 
   if (!password || password !== process.env.ABACUS_PASSWORD) {
     return (
-      <Container className="mt-8 sm:mt-16">
+      <Container className="mt-8 sm:mt-14">
         <header className="max-w-3xl pb-10">
           <h1 className="text-4xl font-bold tracking-tight text-primary">Access Denied</h1>
           <p className="mt-6 text-lg text-primary">
@@ -30,7 +30,7 @@ export default async function Abacus({
   }
 
   return (
-    <Container className="mt-8 sm:mt-16">
+    <Container className="mt-8 sm:mt-14">
       <header className="max-w-3xl pb-10">
         <h1 className="text-4xl font-bold tracking-tight text-text-primary">{metadata.title}</h1>
         <p className="mt-6 text-lg text-text-secondary">{metadata.description}</p>
