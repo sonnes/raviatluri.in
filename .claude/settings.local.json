@@ -14,7 +14,9 @@
       "Bash(git commit:*)",
       "Bash(mkdir:*)",
       "Bash(curl:*)",
-      "Bash(xmllint:*)"
+      "Bash(xmllint:*)",
+      "Bash(git pull --rebase)",
+      "Bash(git push)"
     ],
     "defaultMode": "acceptEdits"
   }

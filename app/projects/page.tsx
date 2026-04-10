@@ -1,133 +1,166 @@
-import { Card } from '@/components/card';
 import { Container } from '@/components/container';
-import { LinkIcon } from '@/components/icons';
 
 type Project = {
   name: string;
   description: string;
-  link: {
-    href: string;
-    label: string;
-  };
-  logo?: string;
-  category: 'Open Source' | 'Personal Project' | 'Professional';
-  technologies: string[];
-  impact?: string;
-  featured?: boolean;
+  href: string;
+  articleHref?: string;
 };
 
-const projects: Project[] = [
+type Category = {
+  title: string;
+  projects: Project[];
+};
+
+const categories: Category[] = [
   {
-    name: 'xkafka',
-    description:
-      'HTTP-like abstractions for Apache Kafka in Go. Simplifies producing and consuming with familiar handlers and middleware patterns.',
-    link: {
-      href: 'https://github.com/gojekfarm/xtools/tree/main/xkafka',
-      label: 'github.com/gojekfarm/xtools',
-    },
-    category: 'Open Source',
-    technologies: ['Go', 'Apache Kafka', 'Microservices'],
-    impact: 'Adopted across Gojek engineering teams',
-    featured: true,
+    title: 'Accessibility',
+    projects: [
+      {
+        name: 'September',
+        description:
+          'A communication assistant for people with ALS, MND, or other speech and motor difficulties. Smart text editor, voice cloning, real-time transcription.',
+        href: 'https://github.com/sonnes/september',
+        articleHref: '/articles/building-september',
+      },
+      {
+        name: 'macOS On-Screen Keyboard',
+        description:
+          'A custom on-screen keyboard for macOS with typing, voice, notes, and stories — all in one place.',
+        href: '/articles/redesigning-macos-on-screen-keyboard',
+      },
+    ],
   },
   {
-    name: 'xtools/errors',
-    description:
-      'Enhanced error handling for Go applications with structured metadata and context propagation.',
-    link: {
-      href: 'https://github.com/gojekfarm/xtools/tree/main/errors',
-      label: 'github.com/gojekfarm/xtools',
-    },
-    category: 'Open Source',
-    technologies: ['Go', 'Error Handling', 'Observability'],
-    impact: 'Used in production at scale',
-    featured: true,
+    title: 'Developer Tools',
+    projects: [
+      {
+        name: 'XDB',
+        description:
+          'A database library based on tuples. Model your domain once, use it with any database.',
+        href: 'https://github.com/xdb-dev/xdb',
+        articleHref: '/articles/introducing-xdb',
+      },
+      {
+        name: 'pi-go',
+        description:
+          'Provider-agnostic AI SDK for Go. Unified interface for building AI agents across LLM providers.',
+        href: 'https://github.com/sonnes/pi-go',
+      },
+      {
+        name: 'Chitragupt',
+        description: 'Go CLI that converts Claude Code session logs into shareable transcripts.',
+        href: 'https://github.com/sonnes/chitragupt',
+      },
+      {
+        name: 'indexeddb-collection',
+        description:
+          'IndexedDB-backed collections for TanStack DB with cross-tab synchronization.',
+        href: 'https://github.com/sonnes/indexeddb-collection',
+      },
+      {
+        name: 'dctl',
+        description: 'Docker Compose compatible CLI for Apple containers.',
+        href: 'https://github.com/sonnes/dctl',
+      },
+    ],
   },
   {
-    name: 'xdb',
-    description:
-      'Tuple-based database abstraction library enabling domain modeling across multiple database backends.',
-    link: {
-      href: 'https://github.com/sonnes/xdb',
-      label: 'github.com/sonnes/xdb',
-    },
-    category: 'Open Source',
-    technologies: ['Go', 'PostgreSQL', 'BadgerDB', 'Database Abstraction'],
-    impact: 'Experimental - exploring new patterns',
+    title: 'At Gojek',
+    projects: [
+      {
+        name: 'XTools',
+        description: 'Reusable Go libraries used across Gojek engineering teams.',
+        href: 'https://github.com/gojekfarm/xtools',
+      },
+      {
+        name: 'xkafka',
+        description:
+          'HTTP-like abstractions for Apache Kafka in Go. Simplifies producing and consuming with familiar handler and middleware patterns.',
+        href: 'https://github.com/gojekfarm/xtools/tree/main/xkafka',
+        articleHref: '/articles/introducing-xkafka',
+      },
+      {
+        name: 'xapi',
+        description:
+          'Type-safe HTTP APIs in Go, middleware-friendly, built on standard library patterns.',
+        href: 'https://github.com/gojekfarm/xtools/tree/main/xapi',
+        articleHref: '/articles/introducing-xapi',
+      },
+    ],
   },
   {
-    name: 'Life in Weeks',
-    description:
-      'Personal data visualization showing major life events, career progression, and experiences over time.',
-    link: {
-      href: '/life',
-      label: 'View Visualization',
-    },
-    category: 'Personal Project',
-    technologies: ['Data Visualization', 'Personal Analytics'],
+    title: 'Fun Stuff',
+    projects: [
+      {
+        name: 'Reader',
+        description: 'Do you remember Google Reader?',
+        href: 'https://github.com/sonnes/reader',
+      },
+      {
+        name: 'Life in Weeks',
+        description: 'A visualization of life events, career, and experiences over time.',
+        href: '/life',
+      },
+    ],
   },
 ];
 
 export const metadata = {
   title: 'Projects',
-  description:
-    'Open source libraries, development tools, and personal projects that solve real-world engineering challenges.',
+  description: 'Things I build — for myself, for work, and for fun.',
 };
 
 export default function Projects() {
   return (
-    <>
-      <Container className="mt-8 sm:mt-16">
-        <header className="max-w-4xl pb-10">
-          <h1 className="text-4xl font-bold tracking-tight text-text-primary">{metadata.title}</h1>
-          <p className="mt-6 text-lg text-text-secondary">{metadata.description}</p>
-          <div className="mt-8 flex flex-wrap gap-2">
-            <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-primary-50 text-primary rounded-full">
-              Open Source Contributor
-            </span>
-            <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-surface-50 text-text-secondary rounded-full">
-              Go Ecosystem
-            </span>
-            <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-surface-50 text-text-secondary rounded-full">
-              Production Scale
-            </span>
-          </div>
-        </header>
+    <Container className="mt-16 sm:mt-32">
+      <header className="max-w-2xl">
+        <h1 className="text-4xl font-bold tracking-tight text-text-primary sm:text-5xl">
+          Projects
+        </h1>
+        <p className="mt-6 text-base text-text-secondary">
+          Things I build — for myself, for work, and for fun.
+        </p>
+      </header>
 
-        <ul role="list" className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map(project => (
-            <Card as="li" key={project.name}>
-              <div className="flex items-start justify-between mb-3">
-                <h3 className="text-lg font-semibold text-text-primary">
-                  <Card.Link href={project.link.href}>{project.name}</Card.Link>
-                </h3>
-              </div>
-
-              <Card.Description>{project.description}</Card.Description>
-
-              <div className="flex flex-wrap gap-2 mb-3">
-                {project.technologies.slice(0, 3).map(tech => (
-                  <span key={tech} className="text-xs text-text-secondary">
-                    {tech}
+      <div className="mt-16 space-y-16 sm:mt-20">
+        {categories.map(category => (
+          <section key={category.title}>
+            <h2 className="text-lg font-semibold text-text-primary border-b border-border pb-3">
+              {category.title}
+            </h2>
+            <ul className="mt-6 space-y-6">
+              {category.projects.map(project => (
+                <li key={project.name} className="border-l-2 border-border pl-4">
+                  <a
+                    href={project.href}
+                    target={project.href.startsWith('/') ? undefined : '_blank'}
+                    rel={project.href.startsWith('/') ? undefined : 'noreferrer'}
+                    className="font-semibold text-text-primary hover:text-primary transition-colors"
+                  >
+                    {project.name}
+                  </a>
+                  <span className="text-text-secondary">
+                    {' '}
+                    — {project.description}
                   </span>
-                ))}
-                {project.technologies.length > 3 && (
-                  <span className="text-xs text-text-tertiary">+{project.technologies.length - 3}</span>
-                )}
-              </div>
-
-              {project.impact && (
-                <div className="text-sm text-green-600 mb-4">{project.impact}</div>
-              )}
-
-              <p className="relative z-10 flex text-sm font-medium text-text-muted transition group-hover:text-primary">
-                <LinkIcon className="h-4 w-4 flex-none" />
-                <span className="ml-2">{project.link.label}</span>
-              </p>
-            </Card>
-          ))}
-        </ul>
-      </Container>
-    </>
+                  {project.articleHref && (
+                    <>
+                      {' '}
+                      <a
+                        href={project.articleHref}
+                        className="text-primary hover:text-primary font-medium underline transition-colors text-sm"
+                      >
+                        Read more →
+                      </a>
+                    </>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </Container>
   );
 }
