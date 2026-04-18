@@ -47,7 +47,7 @@ export default function Uses() {
   return (
     <Container className="mt-8 sm:mt-14">
       <header className="max-w-2xl">
-        <h1 className="text-4xl font-bold tracking-tight text-text-primary sm:text-5xl">Tools</h1>
+        <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">Tools</h1>
         <p className="mt-6 text-base text-text-secondary">
           Hardware, software, and accessibility tools I use every day. Every click takes 0.8
           seconds, so I{"'"}ve gotten picky about what{"'"}s worth clicking.

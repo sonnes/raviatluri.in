@@ -16,41 +16,9 @@ export default function About() {
   return (
     <>
       <Container className="mt-8 sm:mt-14">
-        <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:gap-y-12">
-          <div className="lg:pl-20 lg:sticky lg:top-32 lg:self-start">
-            <div className="max-w-xs px-2.5 lg:max-w-none">
-              <Image
-                src={portraitImage}
-                alt="Portrait of Ravi Atluri"
-                sizes="(min-width: 1024px) 32rem, 20rem"
-                className="aspect-square rotate-3 rounded-2xl bg-zinc-100 object-cover shadow-lg"
-              />
-            </div>
-            <div className="mt-6 flex gap-6">
-              <SocialLink
-                href="https://twitter.com/sonnes"
-                aria-label="Follow on Twitter"
-                icon={TwitterIcon}
-              />
-              <SocialLink
-                href="https://instagram.com/sonnes"
-                aria-label="Follow on Instagram"
-                icon={InstagramIcon}
-              />
-              <SocialLink
-                href="https://github.com/sonnes"
-                aria-label="Follow on GitHub"
-                icon={GitHubIcon}
-              />
-              <SocialLink
-                href="https://www.linkedin.com/in/atluriravi"
-                aria-label="Follow on LinkedIn"
-                icon={LinkedInIcon}
-              />
-            </div>
-          </div>
-          <div className="lg:order-first lg:row-span-2">
-            <h1 className="text-4xl font-bold tracking-tight text-text-primary sm:text-5xl">
+        <div className="flex flex-col gap-12 md:flex-row md:gap-16 lg:gap-24">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
               Ravi Atluri.
             </h1>
 
@@ -202,6 +170,24 @@ export default function About() {
                 thing I did was look up Ravi Kiran. It spat out {'"'}Sonnenstrahlen{'"'} — sun rays.
                 I{"'"}ve been sonnes ever since.
               </p>
+            </div>
+          </div>
+
+          {/* Portrait sidebar */}
+          <div className="md:w-52 md:shrink-0 lg:w-64">
+            <div className="md:sticky md:top-32">
+              <Image
+                src={portraitImage}
+                alt="Portrait of Ravi Atluri"
+                sizes="(min-width: 768px) 16rem, 100vw"
+                className="w-full aspect-square rounded-2xl bg-surface-hover object-cover shadow-md"
+              />
+              <div className="mt-5 flex gap-4">
+                <SocialLink href="https://twitter.com/sonnes" aria-label="Follow on Twitter" icon={TwitterIcon} />
+                <SocialLink href="https://instagram.com/sonnes" aria-label="Follow on Instagram" icon={InstagramIcon} />
+                <SocialLink href="https://github.com/sonnes" aria-label="Follow on GitHub" icon={GitHubIcon} />
+                <SocialLink href="https://www.linkedin.com/in/atluriravi" aria-label="Follow on LinkedIn" icon={LinkedInIcon} />
+              </div>
             </div>
           </div>
         </div>

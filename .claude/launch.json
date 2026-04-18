@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "raviatluri.in",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["dev"],
+      "port": 3000,
+      "autoPort": true
+    },
+    {
+      "name": "september",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd /Users/raviatluri/work/september && pnpm --filter @september/web dev -- --port 3005"],
+      "port": 3005
+    }
+  ]
+}

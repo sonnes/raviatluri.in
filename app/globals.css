@@ -11,11 +11,16 @@
   --font-sans: var(--font-noto-sans);
   --font-mono: var(--font-noto-sans-mono);
   
-  /* Brand Colors using Tailwind's red palette */
-  --color-primary: var(--color-red-500);
-  --color-primary-50: var(--color-red-50);
-  --color-primary-500: var(--color-red-500);
-  
+  /* Brand Colors */
+  --color-primary: var(--color-indigo-500);
+  --color-primary-50: var(--color-indigo-50);
+  --color-primary-500: var(--color-indigo-500);
+
+  /* Secondary Brand Color — amber (sun/Ravi/sonnes) */
+  --color-secondary: var(--color-amber-600);
+  --color-secondary-50: var(--color-amber-50);
+  --color-secondary-500: var(--color-amber-500);
+
   /* Text Colors using Tailwind's zinc palette */
   --color-text-primary: var(--color-zinc-800);
   --color-text-secondary: var(--color-zinc-600);  
@@ -31,8 +36,8 @@
   --color-border: var(--color-zinc-200);
   --color-border-subtle: oklch(from var(--color-zinc-900) l c h / 0.05);
   
-  /* Focus States using primary red */
-  --color-focus: var(--color-red-500);
+  /* Focus States using primary indigo */
+  --color-focus: var(--color-indigo-500);
 }
 
 body {

@@ -96,7 +96,7 @@ export default async function Photos({ searchParams }: Props) {
   return (
     <Container className="mt-8 sm:mt-14">
       <header className="max-w-2xl">
-        <h1 className="text-4xl font-bold tracking-tight text-text-primary sm:text-5xl">Photos</h1>
+        <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">Photos</h1>
         <p className="mt-6 text-base text-text-secondary">
           {activeTag || activeMonth ? (
             <>
@@ -274,7 +274,7 @@ export default async function Photos({ searchParams }: Props) {
               return (
                 <article key={index} id={monthAnchor ? `month-${monthAnchor}` : undefined}>
                   {monthAnchor && (
-                    <div className="mb-6 text-sm font-semibold text-text-secondary">
+                    <div className="mb-6 text-sm font-semibold text-secondary">
                       {new Date(photo.date!).toLocaleDateString('en-US', {
                         month: 'long',
                         year: 'numeric',
@@ -295,7 +295,7 @@ export default async function Photos({ searchParams }: Props) {
                       {photo.caption && (
                         <p className="text-sm text-text-primary leading-relaxed">{photo.caption}</p>
                       )}
-                      <div className="mt-1 flex items-center gap-2 text-xs text-text-muted">
+                      <div className="mt-1 flex items-center gap-2 text-xs text-secondary">
                         {photo.location && <span>{photo.location}</span>}
                         {photo.location && photo.date && <span aria-hidden="true">·</span>}
                         {photo.date && (

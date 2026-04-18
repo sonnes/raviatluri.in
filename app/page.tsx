@@ -17,8 +17,8 @@ export default async function Home() {
       <Container className="mt-8 sm:mt-14">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
           <div>
-            <h1 className="text-4xl font-bold mb-4">Ravi Atluri</h1>
-            <p className="text-text-secondary">
+            <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">Ravi Atluri</h1>
+            <p className="mt-6 text-base text-text-secondary">
               Sr. Principal Architect at Gojek. Working on scalable and reliable systems &
               abstractions for product engineering teams.
             </p>
@@ -50,7 +50,7 @@ export default async function Home() {
           {/* Main content area - stacks on mobile, takes up 2/3 on larger screens */}
           <div className="md:col-span-2">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-xl font-bold">Recent Articles</h2>
+              <h2 className="text-xl font-semibold text-text-primary">Recent Articles</h2>
               <Link
                 href="/articles"
                 className="text-sm text-text-tertiary hover:text-primary transition-colors"
@@ -58,7 +58,7 @@ export default async function Home() {
                 View all →
               </Link>
             </div>
-            <div className="space-y-12 border-l border-border pl-6">
+            <div className="space-y-12 border-l border-secondary/30 pl-6">
               {articles.slice(0, 5).map(article => (
                 <ArticleCard key={article.slug} article={article} />
               ))}
@@ -69,7 +69,7 @@ export default async function Home() {
           <div className="md:col-span-1">
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold">Photos</h2>
+                <h2 className="text-xl font-semibold text-text-primary">Photos</h2>
                 <Link
                   href="/photos"
                   className="text-sm text-text-tertiary hover:text-primary transition-colors"
